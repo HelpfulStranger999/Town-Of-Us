@@ -22,7 +22,6 @@ namespace TownOfUs.CustomOption
             Do = ToDo;
         }
 
-
         private List<OptionBehaviour> CreateOptions()
         {
             var options = new List<OptionBehaviour>();
@@ -31,23 +30,12 @@ namespace TownOfUs.CustomOption
             var numberPrefab = Object.FindObjectOfType<NumberOption>();
             var stringPrefab = Object.FindObjectOfType<StringOption>();
 
-
             foreach (var button in SlotButtons)
-                if (button.Setting != null)
-                {
-                    button.Setting.gameObject.SetActive(true);
-                    options.Add(button.Setting);
-                }
-                else
-                {
-                    var toggle = Object.Instantiate(togglePrefab, togglePrefab.transform.parent).DontDestroy();
-                    toggle.transform.GetChild(2).gameObject.SetActive(false);
-                    toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
-
-                    button.Setting = toggle;
-                    button.OptionCreated();
-                    options.Add(toggle);
-                }
+            {
+                options.Add(button.Render());
+                button.InitializeOption();
+               
+            }
 
             return options;
         }
@@ -66,15 +54,13 @@ namespace TownOfUs.CustomOption
             Loading.Do = () => { };
             Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
 
-            __instance.Children = new[] {Loading.Setting};
-
+            __instance.Children = new[] { Loading.Setting };
 
             yield return new WaitForSeconds(0.5f);
 
             Loading.Setting.gameObject.Destroy();
 
             foreach (var option in OldButtons) option.gameObject.SetActive(true);
-
 
             __instance.Children = OldButtons.ToArray();
 
@@ -125,7 +111,6 @@ namespace TownOfUs.CustomOption
                 return;
             }
 
-
             var splitText = text.Split("\n").ToList();
 
             while (splitText.Count > 0)
@@ -166,7 +151,6 @@ namespace TownOfUs.CustomOption
 
             Cancel(FlashGreen);
         }
-
 
         private IEnumerator FlashGreen()
         {

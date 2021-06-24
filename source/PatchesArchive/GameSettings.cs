@@ -74,12 +74,12 @@ namespace TownOfUs
             {
                 var builder = new StringBuilder(AllOptions ? __result : "");
 
-                foreach (var option in CustomOption.CustomOption.AllOptions)
+                foreach (var option in CustomOption.CustomOptionBase.AllOptions)
                 {
                     if (option.Name == "Custom Game Settings" && !AllOptions) break;
                     if (option.Type == CustomOptionType.Button) continue;
                     if (option.Type == CustomOptionType.Header) builder.AppendLine($"\n{option.Name}");
-                    else if (option.Indent) builder.AppendLine($"     {option.Name}: {option}");
+                    else if (option.IsIndented) builder.AppendLine($"     {option.Name}: {option}");
                     else builder.AppendLine($"{option.Name}: {option}");
                 }
 
@@ -87,7 +87,7 @@ namespace TownOfUs
                 __result = builder.ToString();
 
 
-                if (CustomOption.CustomOption.LobbyTextScroller && __result.Count(c => c == '\n') > 38)
+                if (CustomOption.CustomOptionBase.LobbyTextScroller && __result.Count(c => c == '\n') > 38)
                     __result = __result.Insert(__result.IndexOf('\n'), " (Scroll for more)");
                 else __result = __result.Insert(__result.IndexOf('\n'), "Press Tab to see All Options");
 

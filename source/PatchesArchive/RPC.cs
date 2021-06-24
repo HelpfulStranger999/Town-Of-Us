@@ -1,6 +1,6 @@
 namespace TownOfUs
 {
-    internal enum RPC
+    internal enum VanillaRPC
     {
         PlayAnimation, //0
         CompleteTask, //1

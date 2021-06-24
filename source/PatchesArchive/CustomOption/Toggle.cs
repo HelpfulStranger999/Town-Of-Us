@@ -1,17 +1,20 @@
+using TownOfUs.Extensions;
+using UnityEngine;
+
 namespace TownOfUs.CustomOption
 {
-    public class CustomToggleOption : CustomOption
+    public class CustomToggleOption : CustomOptionBase
     {
         protected internal CustomToggleOption(int id, string name, bool value = true) : base(id, name,
             CustomOptionType.Toggle,
             value)
         {
-            Format = val => (bool) val ? "On" : "Off";
+            Format = val => (bool)val ? "On" : "Off";
         }
 
         protected internal bool Get()
         {
-            return (bool) Value;
+            return (bool)Value;
         }
 
         protected internal void Toggle()
@@ -19,11 +22,18 @@ namespace TownOfUs.CustomOption
             Set(!Get());
         }
 
-        public override void OptionCreated()
+        public override void InitializeOption()
         {
-            base.OptionCreated();
+            base.InitializeOption();
             Setting.Cast<ToggleOption>().TitleText.text = Name;
             Setting.Cast<ToggleOption>().CheckMark.enabled = Get();
+        }
+
+        public override OptionBehaviour Render()
+        {
+            Setting ??= Object.Instantiate(TogglePrefab, TogglePrefab.transform.parent).DontDestroy();
+            Setting.gameObject.SetActive(true);
+            return Setting;
         }
     }
 }

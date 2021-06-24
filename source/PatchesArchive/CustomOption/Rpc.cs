@@ -6,13 +6,13 @@ namespace TownOfUs.CustomOption
 {
     public static class Rpc
     {
-        public static void SendRpc(CustomOption optionn = null)
+        public static void SendRpc(CustomOptionBase optionn = null)
         {
-            List<CustomOption> options;
+            List<CustomOptionBase> options;
             if (optionn != null)
-                options = new List<CustomOption> {optionn};
+                options = new List<CustomOptionBase> {optionn};
             else
-                options = CustomOption.AllOptions;
+                options = CustomOptionBase.AllOptions;
 
             var writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId,
                 (byte) CustomRPC.SyncCustomSettings, SendOption.Reliable);
@@ -34,7 +34,7 @@ namespace TownOfUs.CustomOption
             {
                 var id = reader.ReadInt32();
                 var customOption =
-                    CustomOption.AllOptions.FirstOrDefault(option =>
+                    CustomOptionBase.AllOptions.FirstOrDefault(option =>
                         option.ID == id); // Works but may need to change to gameObject.name check
                 var type = customOption?.Type;
                 object value = null;
