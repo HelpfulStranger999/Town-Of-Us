@@ -11,8 +11,10 @@ using TownOfUs.CustomHats;
 using TownOfUs.CustomOption;
 using TownOfUs.Extensions;
 using TownOfUs.RainbowMod;
+using TownOfUs.Services;
 using UnhollowerBaseLib;
 using UnhollowerRuntimeLib;
+using Unity;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -21,6 +23,7 @@ namespace TownOfUs
     [BepInPlugin("com.slushiegoose.townofus", "Town Of Us", "2.1.3")]
     public class TownOfUs : BasePlugin
     {
+        public IUnityContainer Container { get; private set; }
         public static Sprite JanitorClean;
         public static Sprite EngineerFix;
         public static Sprite SwapperSwitch;
@@ -72,6 +75,8 @@ namespace TownOfUs
         {
             try
             {
+                Container.RegisterSingleton<VoteService>();
+                Container.Resolve<VoteService>();
                 PluginSingleton<TownOfUs>.Instance = this;
 
                 System.Console.WriteLine("000.000.000.000/000000000000000000");
