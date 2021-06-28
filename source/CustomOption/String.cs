@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TownOfUs.CustomOption
 {
-    public class CustomStringOption : CustomOptionBase
+    public class CustomStringOption : CustomOptionBase<string>
     {
         protected internal CustomStringOption(int id, string name, string[] values) : base(id, name,
             CustomOptionType.String,
@@ -17,7 +17,7 @@ namespace TownOfUs.CustomOption
 
         protected internal int Get()
         {
-            return (int)Value;
+            return (int)RawValue;
         }
 
         protected internal void Increase()
@@ -41,8 +41,14 @@ namespace TownOfUs.CustomOption
 
         public override OptionBehaviour Render()
         {
-            Setting ??= Object.Instantiate(StringPrefab, StringPrefab.transform.parent).DontDestroy();
-            Setting.gameObject.SetActive(true);
+            if (Setting == null)
+            {
+                Setting = Object.Instantiate(StringPrefab, StringPrefab.transform.parent).DontDestroy();
+            }
+            else
+            {
+                Setting.gameObject.SetActive(true);
+            }
             return Setting;
         }
     }

@@ -24,6 +24,7 @@ namespace TownOfUs.PatchesArchive.CustomOption
 
         public override void Click()
         {
+            if (!AmongUsClient.Instance.AmHost) return;
             try
             {
                 // TODO Finish implementing.
@@ -40,7 +41,7 @@ namespace TownOfUs.PatchesArchive.CustomOption
             }
             catch
             {
-            // Flash green
+                // Flash green
             }
         }
 

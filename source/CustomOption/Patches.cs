@@ -1,7 +1,9 @@
 using HarmonyLib;
 using System.Collections.Generic;
 using System.Linq;
+using TownOfUs.Services;
 using UnhollowerBaseLib;
+using Unity;
 using UnityEngine;
 
 namespace TownOfUs.CustomOption
@@ -75,14 +77,10 @@ namespace TownOfUs.CustomOption
             public static void Postfix(GameOptionsMenu __instance)
             {
                 var customOptions = CreateOptions(__instance);
-                var y = __instance.GetComponentsInChildren<OptionBehaviour>()
-                    .Max(option => option.transform.localPosition.y);
-                var x = __instance.Children[1].transform.localPosition.x;
-                var z = __instance.Children[1].transform.localPosition.z;
-                var i = 0;
 
-                foreach (var option in customOptions)
-                    option.transform.localPosition = new Vector3(x, y - i++ * 0.5f, z);
+                var initialPosition = new Vector3(__instance.Children.First().transform.position.x,
+                    __instance.Children.Max(option => option.transform.position.y),
+                    __instance.Children.First().transform.position.z);
 
                 __instance.Children = new Il2CppReferenceArray<OptionBehaviour>(customOptions.ToArray());
             }
@@ -131,48 +129,30 @@ namespace TownOfUs.CustomOption
         {
             public static bool Prefix(ToggleOption __instance)
             {
-                var option =
-                    CustomOptionBase.AllOptions.FirstOrDefault(option =>
-                        option.Setting == __instance); // Works but may need to change to gameObject.name check
-                if (option is CustomToggleOption toggle)
+                var menuService = PluginSingleton<TownOfUs>.Instance.Container.Resolve<MenuService>();
+                var currentMenu = menuService.CurrentMenu;
+
+                var option = currentMenu.FindOption(__instance);
+
+                // Needs further refactoring
+                if (option is CustomHeaderOption)
+                {
+                    return false;
+                }
+                else if (option is CustomToggleOption toggle)
                 {
                     toggle.Toggle();
                     return false;
                 }
-
-                if (__instance == ExportButton.Setting)
+                else if (option is CustomButtonOption button)
                 {
-                    if (!AmongUsClient.Instance.AmHost) return false;
-                    ExportButton.Do();
+                    button.Click();
                     return false;
                 }
-
-                if (__instance == ImportButton.Setting)
+                else
                 {
-                    if (!AmongUsClient.Instance.AmHost) return false;
-                    ImportButton.Do();
-                    return false;
+                    return true;
                 }
-
-                if (option is CustomHeaderOption) return false;
-
-                CustomOptionBase option2 = ExportButton.SlotButtons.FirstOrDefault(option => option.Setting == __instance);
-                if (option2 is CustomButtonOption button)
-                {
-                    if (!AmongUsClient.Instance.AmHost) return false;
-                    button.Do();
-                    return false;
-                }
-
-                CustomOptionBase option3 = ImportButton.SlotButtons.FirstOrDefault(option => option.Setting == __instance);
-                if (option3 is CustomButtonOption button2)
-                {
-                    if (!AmongUsClient.Instance.AmHost) return false;
-                    button2.Do();
-                    return false;
-                }
-
-                return true;
             }
         }
 

@@ -1,39 +1,36 @@
 using System;
-using System.Collections.Generic;
 
 namespace TownOfUs.CustomOption
 {
-    public abstract class CustomOptionBase
+    public abstract class CustomOptionBase<TValue> where TValue
     {
         protected static ToggleOption TogglePrefab = UnityEngine.Object.FindObjectOfType<ToggleOption>();
         protected static NumberOption NumberPrefab = UnityEngine.Object.FindObjectOfType<NumberOption>();
         protected static StringOption StringPrefab = UnityEngine.Object.FindObjectOfType<StringOption>();
 
         private static int GlobalUniqueId = 0;
-        public static List<CustomOptionBase> AllOptions = new List<CustomOptionBase>();
-        public readonly int ID;
+        public readonly int Id;
 
-        public Func<object, string> Format;
+        public Func<TValue, string> Format;
         public string Name;
 
-        protected CustomOptionBase(string name, CustomOptionType type, object defaultValue,
-            Func<object, string>? format = null)
+        protected CustomOptionBase(string name, CustomOptionType type, TValue defaultValue,
+            Func<TValue, string>? format = null)
         {
-            ID = GlobalUniqueId++;
+            Id = GlobalUniqueId++;
             Name = name;
             Type = type;
-            DefaultValue = Value = defaultValue;
+            RawValue = defaultValue;
             Format = format ?? (obj => $"{obj}");
 
             if (Type == CustomOptionType.Button) return;
-            AllOptions.Add(this);
             Set(Value);
         }
 
-        protected internal object Value { get; set; }
-        protected internal OptionBehaviour Setting { get; set; }
-        protected internal CustomOptionType Type { get; set; }
-        public object DefaultValue { get; set; }
+        public TValue Value => (TValue)RawValue;
+        private object RawValue { get; set; }
+        public OptionBehaviour Setting { get; protected set; }
+        public CustomOptionType Type { get; protected set; }
 
         public static bool LobbyTextScroller { get; set; } = true;
 
@@ -52,32 +49,31 @@ namespace TownOfUs.CustomOption
 
         public abstract OptionBehaviour Render();
 
-        protected internal void Set(object value, bool SendRpc = true)
+        protected internal void Set(TValue value, bool SendRpc = true)
         {
             PluginSingleton<TownOfUs>.Instance.Log.LogDebug($"{Name} set to {value}");
 
-            Value = value;
+            RawValue = value;
 
             if (Setting != null && AmongUsClient.Instance.AmHost && SendRpc) Rpc.SendRpc(this);
 
             try
             {
-                if (Setting is ToggleOption toggle)
+                Setting.
+                if (Setting is ToggleOption toggle && toggle.CheckMark != null)
                 {
-                    var newValue = (bool)Value;
-                    toggle.oldValue = newValue;
-                    if (toggle.CheckMark != null) toggle.CheckMark.enabled = newValue;
+                    toggle.CheckMark.enabled = (bool)RawValue;
                 }
                 else if (Setting is NumberOption number)
                 {
-                    var newValue = (float)Value;
+                    var newValue = (float)RawValue;
 
                     number.Value = number.oldValue = newValue;
                     number.ValueText.text = ToString();
                 }
                 else if (Setting is StringOption str)
                 {
-                    var newValue = (int)Value;
+                    var newValue = (int)RawValue;
 
                     str.Value = str.oldValue = newValue;
                     str.ValueText.text = ToString();

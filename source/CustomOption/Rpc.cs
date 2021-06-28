@@ -18,7 +18,7 @@ namespace TownOfUs.CustomOption
                 (byte) CustomRPC.SyncCustomSettings, SendOption.Reliable);
             foreach (var option in options)
             {
-                writer.Write(option.ID);
+                writer.Write(option.Id);
                 if (option.Type == CustomOptionType.Toggle) writer.Write((bool) option.Value);
                 else if (option.Type == CustomOptionType.Number) writer.Write((float) option.Value);
                 else if (option.Type == CustomOptionType.String) writer.Write((int) option.Value);
@@ -35,7 +35,7 @@ namespace TownOfUs.CustomOption
                 var id = reader.ReadInt32();
                 var customOption =
                     CustomOptionBase.AllOptions.FirstOrDefault(option =>
-                        option.ID == id); // Works but may need to change to gameObject.name check
+                        option.Id == id); // Works but may need to change to gameObject.name check
                 var type = customOption?.Type;
                 object value = null;
                 if (type == CustomOptionType.Toggle) value = reader.ReadBoolean();

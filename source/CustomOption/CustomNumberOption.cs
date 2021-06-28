@@ -12,11 +12,16 @@ namespace TownOfUs.CustomOption
         protected float Increment { get; set; }
 
         protected internal CustomNumberOption(string name, Range<float> range, float increment,
-        Func<object, string> format = null) : base(name, CustomOptionType.Number, value, format)
+        Func<object, string> format = null) : base(name, CustomOptionType.Number, range.Value, format)
         {
             Min = min;
             Max = max;
             Increment = increment;
+            Test(set_Increment);
+            this.set_Increment(increment);
+
+            void Test(Action<float> floater)
+            { }
         }
 
         protected internal CustomNumberOption(bool indent, string name, float value, float min, float max,
@@ -33,12 +38,12 @@ namespace TownOfUs.CustomOption
 
         protected internal void Increase()
         {
-            Set(Mathf.Clamp(Get() + Increment, Min, Max));
+            Range.SetValue(Range.Value + Increment);
         }
 
         protected internal void Decrease()
         {
-            Set(Mathf.Clamp(Get() - Increment, Min, Max));
+            Range.SetValue(Range.Value - Increment);
         }
 
         public override void InitializeOption()

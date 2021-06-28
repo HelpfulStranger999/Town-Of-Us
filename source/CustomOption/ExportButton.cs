@@ -21,6 +21,7 @@ namespace TownOfUs.CustomOption
 
         public ExportButton() : base("Save Custom Settings")
         {
+            Func<ref string> Func;
             Do = ToDo;
         }
 
