@@ -5,7 +5,7 @@ using TownOfUs.Services;
 namespace TownOfUs.CrewmateRoles.TimeLordMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
-    public class HUDRewind
+    public static class HUDRewind
     {
         public static void Postfix(PlayerControl __instance)
         {

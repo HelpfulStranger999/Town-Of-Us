@@ -6,7 +6,7 @@ using UnityEngine;
 namespace TownOfUs.CrewmateRoles.AltruistMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HudManagerUpdate
+    public static class HudManagerUpdate
     {
         public static void Postfix(HudManager __instance)
         {
@@ -25,7 +25,7 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
                        (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) &&
                        PlayerControl.LocalPlayer.CanMove;
             var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance,
-                LayerMask.GetMask(new[] {"Players", "Ghost"}));
+                LayerMask.GetMask(new[] { "Players", "Ghost" }));
             var killButton = __instance.KillButton;
             DeadBody closestBody = null;
             var closestDistance = float.MaxValue;
@@ -34,7 +34,6 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
             {
                 if (!flag || isDead || collider2D.tag != "DeadBody") continue;
                 var component = collider2D.GetComponent<DeadBody>();
-
 
                 if (!(Vector2.Distance(truePosition, component.TruePosition) <=
                       maxDistance)) continue;

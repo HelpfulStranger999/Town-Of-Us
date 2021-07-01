@@ -5,7 +5,7 @@ using TownOfUs.Services;
 namespace TownOfUs.CrewmateRoles.SheriffMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDKill
+    public static class HUDKill
     {
         private static KillButtonManager KillButton;
 

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace TownOfUs.CrewmateRoles.SnitchMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CompleteTask))]
-    public class CompleteTask
+    public static class CompleteTask
     {
         public static Sprite Sprite => TownOfUs.Arrow;
 

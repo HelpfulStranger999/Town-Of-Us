@@ -36,19 +36,14 @@ namespace TownOfUs.Roles
         public bool CheckSeeReveal(PlayerControl player)
         {
             var role = RoleService.Instance.GetRoles().GetRoleOfPlayer(player);
-            switch (CustomGameOptions.SeeReveal)
+            return CustomGameOptions.SeeReveal switch
             {
-                case SeeReveal.All:
-                    return true;
-                case SeeReveal.Nobody:
-                    return false;
-                case SeeReveal.ImpsAndNeut:
-                    return role != null && role.Faction != Faction.Crewmates || player.Data.IsImpostor;
-                case SeeReveal.Crew:
-                    return role != null && role.Faction == Faction.Crewmates || !player.Data.IsImpostor;
-            }
-
-            return false;
+                SeeReveal.All => true,
+                SeeReveal.Nobody => false,
+                SeeReveal.ImpsAndNeut => role != null && role.Faction != Faction.Crewmates || player.Data.IsImpostor,
+                SeeReveal.Crew => role != null && role.Faction == Faction.Crewmates || !player.Data.IsImpostor,
+                _ => false,
+            };
         }
 
         public override void SendSetRpc()

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace TownOfUs.ImpostorRoles.MinerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HudManagerUpdate
+    public static class HudManagerUpdate
     {
         public static Sprite MineSprite => TownOfUs.MineSprite;
 

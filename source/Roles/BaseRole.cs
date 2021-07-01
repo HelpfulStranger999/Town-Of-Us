@@ -88,7 +88,7 @@ namespace TownOfUs.Roles
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (obj == null) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != typeof(BaseRole)) return false;
             return Equals((BaseRole)obj);

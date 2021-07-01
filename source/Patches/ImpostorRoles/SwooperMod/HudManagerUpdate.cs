@@ -6,7 +6,7 @@ using UnityEngine;
 namespace TownOfUs.ImpostorRoles.SwooperMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HudManagerUpdate
+    public static class HudManagerUpdate
     {
         public static Sprite SwoopSprite => TownOfUs.SwoopSprite;
 

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace TownOfUs.NeutralRoles.ArsonistMod
 {
     [HarmonyPatch]
-    public class HudManagerUpdate
+    public static class HudManagerUpdate
     {
         public static Sprite IgniteSprite => TownOfUs.IgniteSprite;
 
