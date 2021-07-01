@@ -18,7 +18,7 @@ namespace TownOfUs.ImpostorRoles.MorphlingMod
             if (!flag) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
-            var role = Role.GetRole<Morphling>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Morphling>(PlayerControl.LocalPlayer);
             var target = role.ClosestPlayer;
             if (__instance == role.MorphButton)
             {

@@ -14,7 +14,7 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
             if (!flag) return true;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
-            var role = Role.GetRole<Arsonist>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Arsonist>(PlayerControl.LocalPlayer);
             if (role.IgniteUsed) return false;
             if (__instance == role.IgniteButton)
             {

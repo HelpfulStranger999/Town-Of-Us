@@ -15,7 +15,7 @@ namespace TownOfUs.ImpostorRoles.JanitorMod
             if (!flag) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
-            var role = Role.GetRole<Janitor>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Janitor>(PlayerControl.LocalPlayer);
 
             if (__instance == role.CleanButton)
             {

@@ -10,7 +10,7 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
         {
             if (__instance.myPlayer.Is(RoleEnum.Undertaker))
             {
-                var role = Role.GetRole<Undertaker>(__instance.myPlayer);
+                var role = BaseRole.GetRole<Undertaker>(__instance.myPlayer);
                 if (role.CurrentlyDragging != null)
                     if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
                         __instance.body.velocity /= 2;

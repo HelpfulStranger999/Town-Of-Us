@@ -1,6 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
-using UnityEngine;
+using TownOfUs.Services;
 
 namespace TownOfUs
 {
@@ -9,7 +9,7 @@ namespace TownOfUs
     {
         private static bool CheckUndertaker(PlayerControl player)
         {
-            var role = Role.GetRole<Undertaker>(player);
+            var role = RoleService.Instance.GetRoles().GetRole<Undertaker>();
             return player.Data.IsDead || role.CurrentlyDragging != null;
         }
         public static bool Prefix(Vent __instance, out float __result,
@@ -28,15 +28,13 @@ namespace TownOfUs
                 return canUse = couldUse = false;
             }
 
-
             if (player.Is(RoleEnum.Engineer) && !player.Data.IsDead)
             {
-                
                 canUse = couldUse = false;
                 playerInfo.IsImpostor = true;
                 return true;
             }
-            
+
             canUse = couldUse = false;
             return true;
         }

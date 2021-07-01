@@ -20,7 +20,7 @@ namespace TownOfUs.CrewmateRoles.EngineerMod
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Engineer)) return;
             if (__instance.KillButton == null) return;
 
-            var role = Role.GetRole<Engineer>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Engineer>(PlayerControl.LocalPlayer);
 
             __instance.KillButton.renderer.sprite = Sprite;
             __instance.KillButton.SetCoolDown(0f, 10f);

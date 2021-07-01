@@ -10,7 +10,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
     {
         public static void Postfix(HudManager __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Phantom))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Phantom))
             {
                 var phantom = (Phantom) role;
                 var caught = phantom.Caught;

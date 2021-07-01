@@ -27,7 +27,7 @@ namespace TownOfUs.CrewmateRoles.MedicMod
 
         public static void Postfix(HudManager __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Medic))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Medic))
             {
                 var medic = (Medic) role;
 

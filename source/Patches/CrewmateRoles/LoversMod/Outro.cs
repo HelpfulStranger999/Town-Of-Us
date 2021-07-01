@@ -13,7 +13,7 @@ namespace TownOfUs.CrewmateRoles.LoversMod
         {
             TextMeshPro text;
             Vector3 pos;
-            if (Role.NobodyWins)
+            if (BaseRole.NobodyWins)
             {
                 text = Object.Instantiate(__instance.WinText);
                 var color = __instance.WinText.color;
@@ -28,9 +28,9 @@ namespace TownOfUs.CrewmateRoles.LoversMod
             }
 
 
-            if (!Role.AllRoles.Where(x => x.RoleType == RoleEnum.Lover || x.RoleType == RoleEnum.LoverImpostor)
-                .Any(x => ((Lover) x).LoveCoupleWins)) return;
-            if (Role.GetRoles(RoleEnum.Jester).Any(x => ((Jester) x).VotedOut)) return;
+            if (!BaseRole.AllRoles.Where(x => x.RoleType == RoleEnum.Lover || x.RoleType == RoleEnum.LoverImpostor)
+                .Any(x => ((BaseLover) x).LoveCoupleWins)) return;
+            if (BaseRole.GetRoles(RoleEnum.Jester).Any(x => ((Jester) x).VotedOut)) return;
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
             if (array[0] != null)
             {

@@ -12,7 +12,7 @@ namespace TownOfUs.CrewmateRoles.SnitchMod
             {
                 if (Utils.PlayerById(state.TargetPlayerId).Data.IsImpostor) state.NameText.color = Palette.ImpostorRed;
 
-                var role = Role.GetRole(state);
+                var role = BaseRole.GetRole(state);
                 if (role.Faction == Faction.Neutral && CustomGameOptions.SnitchSeesNeutrals)
                     state.NameText.color = role.Color;
             }
@@ -21,14 +21,14 @@ namespace TownOfUs.CrewmateRoles.SnitchMod
         public static void Postfix(HudManager __instance)
         {
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Snitch)) return;
-            var role = Role.GetRole<Snitch>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Snitch>(PlayerControl.LocalPlayer);
             if (!role.TasksDone) return;
             if (MeetingHud.Instance) UpdateMeeting(MeetingHud.Instance);
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
                 if (player.Data.IsImpostor) player.nameText.color = Palette.ImpostorRed;
-                var playerRole = Role.GetRole(player);
+                var playerRole = BaseRole.GetRole(player);
                 if (playerRole.Faction == Faction.Neutral && CustomGameOptions.SnitchSeesNeutrals)
                     player.nameText.color = role.Color;
             }

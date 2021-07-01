@@ -42,7 +42,7 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
 
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Swapper))
                 {
-                    var swapper = Role.GetRole<Swapper>(PlayerControl.LocalPlayer);
+                    var swapper = BaseRole.GetRole<Swapper>(PlayerControl.LocalPlayer);
                     foreach (var button in swapper.Buttons.Where(button => button != null)) button.SetActive(false);
                 }
 

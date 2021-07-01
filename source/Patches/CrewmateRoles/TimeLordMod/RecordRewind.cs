@@ -146,7 +146,7 @@ namespace TownOfUs.CrewmateRoles.TimeLordMod
                 Rewind();
             else Record();
 
-            foreach (var role in Role.GetRoles(RoleEnum.TimeLord))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.TimeLord))
             {
                 var TimeLord = (TimeLord) role;
                 if ((DateTime.UtcNow - TimeLord.StartRewind).TotalMilliseconds >

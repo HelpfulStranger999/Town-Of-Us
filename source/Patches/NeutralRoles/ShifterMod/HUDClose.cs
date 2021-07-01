@@ -11,7 +11,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
         public static void Postfix(Object obj)
         {
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
-            foreach (var role in Role.GetRoles(RoleEnum.Shifter))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Shifter))
             {
                 var shifter = (Shifter) role;
                 shifter.LastShifted = DateTime.UtcNow;

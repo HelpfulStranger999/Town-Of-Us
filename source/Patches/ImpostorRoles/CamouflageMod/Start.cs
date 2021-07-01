@@ -9,7 +9,7 @@ namespace TownOfUs.ImpostorRoles.CamouflageMod
     {
         public static void Postfix(ShipStatus __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Camouflager))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Camouflager))
             {
                 var seer = (Camouflager) role;
                 seer.LastCamouflaged = DateTime.UtcNow;

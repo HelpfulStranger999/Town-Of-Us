@@ -13,7 +13,7 @@ namespace TownOfUs.ImpostorRoles.CamouflageMod
             if (!flag) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
-            var role = Role.GetRole<Camouflager>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Camouflager>(PlayerControl.LocalPlayer);
             var target = DestroyableSingleton<HudManager>.Instance.KillButton.CurrentTarget;
             if (__instance == role.CamouflageButton)
             {

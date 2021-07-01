@@ -22,7 +22,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
             var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
             var shiftButton = DestroyableSingleton<HudManager>.Instance.KillButton;
 
-            var role = Role.GetRole<Shifter>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Shifter>(PlayerControl.LocalPlayer);
 
 
             if (isDead)

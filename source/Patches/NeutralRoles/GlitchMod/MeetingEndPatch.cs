@@ -13,7 +13,7 @@ namespace TownOfUs.NeutralRoles.GlitchMod
         {
             if (ExileController.Instance != null && obj == ExileController.Instance.gameObject)
             {
-                var glitch = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch);
+                var glitch = BaseRole.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch);
                 if (glitch != null)
                     ((Glitch) glitch).LastKill = DateTime.UtcNow;
             }

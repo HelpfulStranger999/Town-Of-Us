@@ -18,7 +18,7 @@ namespace TownOfUs.ImpostorRoles.MinerMod
             if (!flag) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
-            var role = Role.GetRole<Miner>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Miner>(PlayerControl.LocalPlayer);
             if (__instance == role.MineButton)
             {
                 if (__instance.isCoolingDown) return false;

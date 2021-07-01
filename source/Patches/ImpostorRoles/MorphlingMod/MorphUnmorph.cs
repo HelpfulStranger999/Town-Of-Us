@@ -8,7 +8,7 @@ namespace TownOfUs.ImpostorRoles.MorphlingMod
     {
         public static void Postfix(HudManager __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Morphling))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Morphling))
             {
                 var morphling = (Morphling) role;
                 if (morphling.Morphed)

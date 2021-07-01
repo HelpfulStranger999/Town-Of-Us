@@ -21,7 +21,7 @@ namespace TownOfUs.CrewmateRoles.TimeLordMod
             var isDead = data.IsDead;
             var rewindButton = DestroyableSingleton<HudManager>.Instance.KillButton;
 
-            var role = Role.GetRole<TimeLord>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<TimeLord>(PlayerControl.LocalPlayer);
 
 
             if (isDead)

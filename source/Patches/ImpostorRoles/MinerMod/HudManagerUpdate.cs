@@ -16,7 +16,7 @@ namespace TownOfUs.ImpostorRoles.MinerMod
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Miner)) return;
-            var role = Role.GetRole<Miner>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Miner>(PlayerControl.LocalPlayer);
             if (role.MineButton == null)
             {
                 role.MineButton = Object.Instantiate(__instance.KillButton, HudManager.Instance.transform);

@@ -27,7 +27,7 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist)) return;
-            var role = Role.GetRole<Arsonist>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Arsonist>(PlayerControl.LocalPlayer);
 
             if (MeetingHud.Instance != null) UpdateMeeting(MeetingHud.Instance, role);
             foreach (var playerId in role.DousedPlayers)

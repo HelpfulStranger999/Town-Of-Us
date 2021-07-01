@@ -36,7 +36,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
             public static void Postfix(MeetingHud __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
-                var mayorRole = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var mayorRole = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
                 GenButton(mayorRole, __instance);
             }
         }
@@ -47,7 +47,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
             public static void Postfix(MeetingHud __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
-                var mayorRole = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var mayorRole = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
                 UpdateButton(mayorRole, __instance);
             }
         }
@@ -58,7 +58,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
             public static void Postfix(MeetingHud __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
-                var mayorRole = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var mayorRole = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
                 mayorRole.Abstain.ClearButtons();
                 UpdateButton(mayorRole, __instance);
             }
@@ -70,7 +70,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
             public static void Postfix(MeetingHud __instance, int __0)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
-                var mayorRole = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var mayorRole = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
                 if (__0 != 251) mayorRole.Abstain.ClearButtons();
 
                 UpdateButton(mayorRole, __instance);
@@ -83,7 +83,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
             public static void Postfix(MeetingHud __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
-                var mayorRole = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var mayorRole = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
                 UpdateButton(mayorRole, __instance);
             }
         }
@@ -94,7 +94,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
             public static void Postfix(MeetingHud __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
-                var mayorRole = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var mayorRole = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
                 switch (__instance.state)
                 {
                     case MeetingHud.VoteStates.Discussion:

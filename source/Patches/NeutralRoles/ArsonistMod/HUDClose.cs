@@ -11,7 +11,7 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
         public static void Postfix(Object obj)
         {
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
-            foreach (var role in Role.GetRoles(RoleEnum.Arsonist))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Arsonist))
             {
                 var arsonist = (Arsonist) role;
                 arsonist.LastDoused = DateTime.UtcNow;

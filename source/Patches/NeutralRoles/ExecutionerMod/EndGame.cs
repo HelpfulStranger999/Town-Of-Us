@@ -11,7 +11,7 @@ namespace TownOfUs.NeutralRoles.ExecutionerMod
         {
             if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask) return true;
 
-            foreach (var role in Role.AllRoles)
+            foreach (var role in BaseRole.AllRoles)
                 if (role.RoleType == RoleEnum.Executioner)
                     ((Executioner) role).Loses();
 

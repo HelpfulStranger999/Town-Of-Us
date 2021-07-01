@@ -8,7 +8,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
     {
         public static void Prefix(PlayerPhysics __instance, [HarmonyArgument(0)] ref bool amDead)
         {
-            if (__instance.myPlayer.Is(RoleEnum.Phantom)) amDead = Role.GetRole<Phantom>(__instance.myPlayer).Caught;
+            if (__instance.myPlayer.Is(RoleEnum.Phantom)) amDead = BaseRole.GetRole<Phantom>(__instance.myPlayer).Caught;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace TownOfUs.CrewmateRoles.TimeLordMod
         public static void Postfix(Object obj)
         {
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
-            foreach (var role in Role.GetRoles(RoleEnum.TimeLord))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.TimeLord))
             {
                 var TimeLord = (TimeLord) role;
                 TimeLord.FinishRewind = DateTime.UtcNow;

@@ -10,9 +10,9 @@ namespace TownOfUs.NeutralRoles.GlitchMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch && ((Glitch) x).GlitchWins);
+            var role = BaseRole.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch && ((Glitch) x).GlitchWins);
             if (role == null) return;
-            if (Role.GetRoles(RoleEnum.Jester).Any(x => ((Jester) x).VotedOut)) return;
+            if (BaseRole.GetRoles(RoleEnum.Jester).Any(x => ((Jester) x).VotedOut)) return;
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
             array[0].NameText.text = role.ColorString + array[0].NameText.text + "</color>";
             __instance.BackgroundBar.material.color = role.Color;

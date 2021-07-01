@@ -24,7 +24,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
 
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
             {
-                Role.RoleDictionary.Remove(PlayerControl.LocalPlayer.PlayerId);
+                BaseRole.RoleDictionary.Remove(PlayerControl.LocalPlayer.PlayerId);
                 var role = new Phantom(PlayerControl.LocalPlayer);
                 role.RegenTask();
                 Lights.SetLights();
@@ -41,7 +41,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
 
-            if (Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught) return;
+            if (BaseRole.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught) return;
             var startingVent =
                 ShipStatus.Instance.AllVents[Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
             PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(startingVent.transform.position);

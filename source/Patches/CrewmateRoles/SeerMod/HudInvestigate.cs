@@ -22,7 +22,7 @@ namespace TownOfUs.CrewmateRoles.SeerMod
             var isDead = data.IsDead;
             var investigateButton = DestroyableSingleton<HudManager>.Instance.KillButton;
 
-            var role = Role.GetRole<Seer>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Seer>(PlayerControl.LocalPlayer);
 
 
             if (isDead)

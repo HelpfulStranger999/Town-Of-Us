@@ -15,7 +15,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
         {
             var playerControl = playerInfo.Object;
 
-            if (playerControl.Is(RoleEnum.Phantom) && Role.GetRole<Phantom>(playerControl).Caught)
+            if (playerControl.Is(RoleEnum.Phantom) && BaseRole.GetRole<Phantom>(playerControl).Caught)
             {
                 __result = float.MaxValue;
                 return canUse = couldUse = false;

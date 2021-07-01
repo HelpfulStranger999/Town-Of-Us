@@ -24,7 +24,7 @@ namespace TownOfUs.CrewmateRoles.SheriffMod
             var flag8 = PlayerControl.LocalPlayer.Is(RoleEnum.Sheriff);
             if (flag8)
             {
-                var role = Role.GetRole<Sheriff>(PlayerControl.LocalPlayer);
+                var role = BaseRole.GetRole<Sheriff>(PlayerControl.LocalPlayer);
                 var isDead = PlayerControl.LocalPlayer.Data.IsDead;
                 if (isDead)
                 {

@@ -25,7 +25,7 @@ namespace TownOfUs.CrewmateRoles.MedicMod
                 return;
 
             var player = Utils.PlayerById(playerId);
-            foreach (var role in Role.GetRoles(RoleEnum.Medic))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Medic))
                 if (((Medic) role).ShieldedPlayer.PlayerId == playerId)
                 {
                     ((Medic) role).ShieldedPlayer = null;

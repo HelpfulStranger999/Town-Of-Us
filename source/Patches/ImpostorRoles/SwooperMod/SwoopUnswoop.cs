@@ -10,7 +10,7 @@ namespace TownOfUs.ImpostorRoles.SwooperMod
         [HarmonyPriority(Priority.Last)]
         public static void Postfix(HudManager __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Swooper))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Swooper))
             {
                 var swooper = (Swooper) role;
                 if (swooper.IsSwooped)

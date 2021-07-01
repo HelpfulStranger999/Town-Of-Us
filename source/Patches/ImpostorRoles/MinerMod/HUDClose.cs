@@ -13,7 +13,7 @@ namespace TownOfUs.ImpostorRoles.MinerMod
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Miner))
             {
-                var role = Role.GetRole<Miner>(PlayerControl.LocalPlayer);
+                var role = BaseRole.GetRole<Miner>(PlayerControl.LocalPlayer);
                 role.LastMined = DateTime.UtcNow;
             }
         }

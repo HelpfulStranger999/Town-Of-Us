@@ -24,7 +24,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 player.Data.IsDead ||
                 player.Data.Disconnected
             ) return true;
-            var role = Role.GetRole(player);
+            var role = BaseRole.GetRole(player);
             return role != null && role.Criteria();
         }
 
@@ -109,7 +109,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 var currentGuess = role.Guesses[targetId];
                 if (currentGuess == "None") return;
 
-                var playerRole = Role.GetRole(voteArea);
+                var playerRole = BaseRole.GetRole(voteArea);
 
                 var toDie = playerRole.Name == currentGuess ? playerRole.Player : role.Player;
 
@@ -118,7 +118,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 ShowHideButtons.HideSingle(role, targetId, toDie == role.Player);
                 if (toDie.isLover() && CustomGameOptions.BothLoversDie)
                 {
-                    var lover = ((Lover)playerRole).OtherLover.Player;
+                    var lover = ((BaseLover)playerRole).OtherLover.Player;
                     ShowHideButtons.HideSingle(role, lover.PlayerId, false);
                 }
             }
@@ -128,7 +128,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
 
         public static void Postfix(MeetingHud __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Assassin))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Assassin))
             {
                 var assassin = (Assassin) role;
                 assassin.Guesses.Clear();
@@ -139,7 +139,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             if (PlayerControl.LocalPlayer.Data.IsDead) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Assassin)) return;
 
-            var assassinRole = Role.GetRole<Assassin>(PlayerControl.LocalPlayer);
+            var assassinRole = BaseRole.GetRole<Assassin>(PlayerControl.LocalPlayer);
             if (assassinRole.RemainingKills <= 0) return;
             foreach (var voteArea in __instance.playerStates)
             {

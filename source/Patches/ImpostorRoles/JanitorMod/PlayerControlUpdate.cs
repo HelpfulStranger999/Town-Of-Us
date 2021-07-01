@@ -14,7 +14,7 @@ namespace TownOfUs.ImpostorRoles.JanitorMod
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Janitor)) return;
 
-            var role = Role.GetRole<Janitor>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Janitor>(PlayerControl.LocalPlayer);
             if (role.CleanButton == null)
             {
                 role.CleanButton = Object.Instantiate(__instance.KillButton, HudManager.Instance.transform);

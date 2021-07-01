@@ -14,7 +14,7 @@ namespace TownOfUs.CrewmateRoles.LoversMod
 
             var flag3 = __instance.isLover() && CustomGameOptions.BothLoversDie;
             if (!flag3) return true;
-            var otherLover = Role.GetRole<Lover>(__instance).OtherLover.Player;
+            var otherLover = BaseRole.GetRole<BaseLover>(__instance).OtherLover.Player;
             if (otherLover.Data.IsDead) return true;
 
             if (reason == DeathReason.Exile) KillButtonTarget.DontRevive = __instance.PlayerId;

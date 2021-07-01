@@ -102,7 +102,7 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
 
         public static void Postfix(MeetingHud __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Swapper))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Swapper))
             {
                 var swapper = (Swapper) role;
                 swapper.ListOfActives.Clear();
@@ -112,7 +112,7 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
 
             if (PlayerControl.LocalPlayer.Data.IsDead) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Swapper)) return;
-            var swapperrole = Role.GetRole<Swapper>(PlayerControl.LocalPlayer);
+            var swapperrole = BaseRole.GetRole<Swapper>(PlayerControl.LocalPlayer);
             for (var i = 0; i < __instance.playerStates.Length; i++)
                 GenButton(swapperrole, i, __instance.playerStates[i].AmDead);
         }

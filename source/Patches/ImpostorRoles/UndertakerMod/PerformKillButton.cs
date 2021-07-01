@@ -16,7 +16,7 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
             if (!flag) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
-            var role = Role.GetRole<Undertaker>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Undertaker>(PlayerControl.LocalPlayer);
 
             if (__instance == role.DragDropButton)
             {

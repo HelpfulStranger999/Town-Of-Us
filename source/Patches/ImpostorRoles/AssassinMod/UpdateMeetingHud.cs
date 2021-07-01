@@ -10,7 +10,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
     {
         private static void Postfix(MeetingHud __instance)
         {
-            var role = Role.GetRole(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole(PlayerControl.LocalPlayer);
             if (role?.RoleType != RoleEnum.Assassin) return;
             var assassin = (Assassin)role;
             foreach (var voteArea in __instance.playerStates)

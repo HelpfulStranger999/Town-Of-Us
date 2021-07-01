@@ -31,7 +31,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton) return true;
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Shifter);
             if (!flag) return true;
-            var role = Role.GetRole<Shifter>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Shifter>(PlayerControl.LocalPlayer);
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             var flag2 = role.ShifterShiftTimer() == 0f;
@@ -105,7 +105,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
             var resetShifter = false;
             var snitch = false;
 
-            Role newRole;
+            BaseRole newRole;
 
             switch (role)
             {
@@ -126,10 +126,10 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                 case RoleEnum.Crewmate:
                 case RoleEnum.Altruist:
 
-                    if (role == RoleEnum.Investigator) Footprint.DestroyAll(Role.GetRole<Investigator>(other));
+                    if (role == RoleEnum.Investigator) Footprint.DestroyAll(BaseRole.GetRole<Investigator>(other));
 
 
-                    newRole = Role.GetRole(other);
+                    newRole = BaseRole.GetRole(other);
                     newRole.Player = shifter;
 
                     if (role == RoleEnum.Snitch) CompleteTask.Postfix(shifter);
@@ -159,14 +159,14 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                     }
 
 
-                    Role.RoleDictionary.Remove(shifter.PlayerId);
-                    Role.RoleDictionary.Remove(other.PlayerId);
+                    BaseRole.RoleDictionary.Remove(shifter.PlayerId);
+                    BaseRole.RoleDictionary.Remove(other.PlayerId);
 
-                    Role.RoleDictionary.Add(shifter.PlayerId, newRole);
+                    BaseRole.RoleDictionary.Add(shifter.PlayerId, newRole);
                     lovers = role == RoleEnum.Lover;
                     snitch = role == RoleEnum.Snitch;
 
-                    foreach (var exeRole in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Executioner))
+                    foreach (var exeRole in BaseRole.AllRoles.Where(x => x.RoleType == RoleEnum.Executioner))
                     {
                         var executioner = (Executioner) exeRole;
                         var target = executioner.target;
@@ -185,7 +185,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                     {
                         resetShifter = true;
                         shifterRole.Player = other;
-                        Role.RoleDictionary.Add(other.PlayerId, shifterRole);
+                        BaseRole.RoleDictionary.Add(other.PlayerId, shifterRole);
                     }
                     else
                     {
@@ -230,14 +230,14 @@ namespace TownOfUs.NeutralRoles.ShifterMod
 
                 if (lovers)
                 {
-                    var lover = Role.GetRole<Lover>(shifter);
+                    var lover = BaseRole.GetRole<BaseLover>(shifter);
                     var otherLover = lover.OtherLover;
                     otherLover.RegenTask();
                 }
 
                 if (snitch)
                 {
-                    var snitchRole = Role.GetRole<Snitch>(shifter);
+                    var snitchRole = BaseRole.GetRole<Snitch>(shifter);
                     snitchRole.ImpArrows.DestroyAll();
                     snitchRole.SnitchArrows.DestroyAll();
                     snitchRole.SnitchTargets.Clear();
@@ -256,7 +256,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
             if (shifter.AmOwner || other.AmOwner)
             {
                 if (shifter.Is(RoleEnum.Arsonist) && other.AmOwner)
-                    Role.GetRole<Arsonist>(shifter).IgniteButton.Destroy();
+                    BaseRole.GetRole<Arsonist>(shifter).IgniteButton.Destroy();
                 DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
                 DestroyableSingleton<HudManager>.Instance.KillButton.isActive = false;
 

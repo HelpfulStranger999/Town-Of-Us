@@ -9,7 +9,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
     {
         public static void Postfix(ShipStatus __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Shifter))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Shifter))
             {
                 var shifter = (Shifter) role;
                 shifter.LastShifted = DateTime.UtcNow;

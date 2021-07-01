@@ -11,7 +11,7 @@ namespace TownOfUs.ImpostorRoles.MinerMod
     {
         public static void Postfix(ShipStatus __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Miner))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Miner))
             {
                 var miner = (Miner) role;
                 miner.LastMined = DateTime.UtcNow;

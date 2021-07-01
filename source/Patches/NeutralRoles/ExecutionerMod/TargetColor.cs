@@ -27,7 +27,7 @@ namespace TownOfUs.NeutralRoles.ExecutionerMod
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Executioner)) return;
-            var role = Role.GetRole<Executioner>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Executioner>(PlayerControl.LocalPlayer);
 
             if (role.target == null)
             {
@@ -58,7 +58,7 @@ namespace TownOfUs.NeutralRoles.ExecutionerMod
         public static void ExeToJes(PlayerControl player)
         {
             player.myTasks.RemoveAt(0);
-            Role.RoleDictionary.Remove(player.PlayerId);
+            BaseRole.RoleDictionary.Remove(player.PlayerId);
 
 
             if (CustomGameOptions.OnTargetDead == OnTargetDead.Jester)

@@ -10,7 +10,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
         {
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
             {
-                var caught = Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught;
+                var caught = BaseRole.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught;
                 if (!caught)
                 {
                     __instance.Close();

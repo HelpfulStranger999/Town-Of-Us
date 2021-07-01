@@ -10,7 +10,7 @@ namespace TownOfUs.NeutralRoles.ExecutionerMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x =>
+            var role = BaseRole.AllRoles.FirstOrDefault(x =>
                 x.RoleType == RoleEnum.Executioner && ((Executioner) x).TargetVotedOut);
             if (role == null) return;
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();

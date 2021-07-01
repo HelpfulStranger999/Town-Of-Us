@@ -12,7 +12,7 @@ namespace TownOfUs.NeutralRoles.ExecutionerMod
             if (exiled == null) return;
             var player = exiled.Object;
 
-            foreach (var role in Role.GetRoles(RoleEnum.Executioner))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Executioner))
                 if (player.PlayerId == ((Executioner) role).target.PlayerId)
                     ((Executioner) role).Wins();
         }

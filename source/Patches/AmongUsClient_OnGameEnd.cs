@@ -1,7 +1,8 @@
-using System.Linq;
 using HarmonyLib;
 using Il2CppSystem.Collections.Generic;
+using System.Linq;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs
 {
@@ -22,15 +23,13 @@ namespace TownOfUs
     {
         public static void Prefix()
         {
-            var jester = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Jester && ((Jester) x).VotedOut);
-            var executioner = Role.AllRoles.FirstOrDefault(x =>
-                x.RoleType == RoleEnum.Executioner && ((Executioner) x).TargetVotedOut);
-            if (Role.NobodyWins)
+            if (BaseRole.NobodyWins)
             {
                 TempData.winners = new List<WinningPlayerData>();
                 return;
             }
 
+            var jester = RoleService.Instance.GetRoles().GetRoles<Jester>().FirstOrDefault(j => j.VotedOut);
             if (jester != null)
             {
                 var winners = Utils.potentialWinners.Where(x => x.Name == jester.PlayerName).ToList();
@@ -44,6 +43,7 @@ namespace TownOfUs
                 return;
             }
 
+            var executioner = RoleService.Instance.GetRoles().GetRoles<Executioner>().FirstOrDefault(e => e.TargetVotedOut);
             if (executioner != null)
             {
                 var winners = Utils.potentialWinners.Where(x => x.Name == executioner.PlayerName).ToList();
@@ -52,12 +52,10 @@ namespace TownOfUs
                 return;
             }
 
-            var lover = Role.AllRoles
-                .Where(x => x.RoleType == RoleEnum.Lover || x.RoleType == RoleEnum.LoverImpostor)
-                .FirstOrDefault(x => ((Lover) x).LoveCoupleWins);
+            var lover = RoleService.Instance.GetRoles().GetRoles<BaseLover>().FirstOrDefault(l => l.LoveCoupleWins);
             if (lover != null)
             {
-                var lover1 = (Lover) lover;
+                var lover1 = (BaseLover)lover;
                 var lover2 = lover1.OtherLover;
                 var winners = Utils.potentialWinners
                     .Where(x => x.Name == lover1.PlayerName || x.Name == lover2.PlayerName).ToList();
@@ -66,7 +64,7 @@ namespace TownOfUs
                 return;
             }
 
-            var glitch = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch && ((Glitch) x).GlitchWins);
+            var glitch = RoleService.Instance.GetRoles().GetRoles<Glitch>().FirstOrDefault(g => g.GlitchWins);
             if (glitch != null)
             {
                 var winners = Utils.potentialWinners.Where(x => x.Name == glitch.PlayerName).ToList();
@@ -75,8 +73,7 @@ namespace TownOfUs
                 return;
             }
 
-            var arsonist =
-                Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Arsonist && ((Arsonist) x).ArsonistWins);
+            var arsonist = RoleService.Instance.GetRoles().GetRoles<Arsonist>().FirstOrDefault(a => a.ArsonistWins);
             if (arsonist != null)
             {
                 var winners = Utils.potentialWinners.Where(x => x.Name == arsonist.PlayerName).ToList();
@@ -85,8 +82,7 @@ namespace TownOfUs
                 return;
             }
 
-            var phantom =
-                Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Phantom && ((Phantom) x).CompletedTasks);
+            var phantom = RoleService.Instance.GetRoles().GetRoles<Phantom>().FirstOrDefault(p => p.CompletedTasks);
             if (phantom != null)
             {
                 var winners = Utils.potentialWinners.Where(x => x.Name == phantom.PlayerName).ToList();

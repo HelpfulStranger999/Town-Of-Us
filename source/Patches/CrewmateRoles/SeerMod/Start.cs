@@ -9,7 +9,7 @@ namespace TownOfUs.CrewmateRoles.SeerMod
     {
         public static void Postfix(ShipStatus __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Seer))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Seer))
             {
                 var seer = (Seer) role;
                 seer.LastInvestigated = DateTime.UtcNow;

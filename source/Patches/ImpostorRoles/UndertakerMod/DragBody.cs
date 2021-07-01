@@ -11,7 +11,7 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
         {
             if (!__instance.Is(RoleEnum.Undertaker)) return;
 
-            var role = Role.GetRole<Undertaker>(__instance);
+            var role = BaseRole.GetRole<Undertaker>(__instance);
 
             if (role.CurrentlyDragging != null)
             {

@@ -12,7 +12,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
         {
             var num = float.MaxValue;
             var @object = pc.Object;
-            couldUse = (!pc.IsDead || @object.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(@object).Caught)
+            couldUse = (!pc.IsDead || @object.Is(RoleEnum.Phantom) && !BaseRole.GetRole<Phantom>(@object).Caught)
                        && @object.CanMove;
             canUse = couldUse;
             if (canUse)

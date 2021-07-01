@@ -25,7 +25,7 @@ namespace TownOfUs.CrewmateRoles.InvestigatorMod
         {
             if (!GameStarted || !PlayerControl.LocalPlayer.Is(RoleEnum.Investigator)) return;
             // New Footprint
-            var investigator = Role.GetRole<Investigator>(PlayerControl.LocalPlayer);
+            var investigator = BaseRole.GetRole<Investigator>(PlayerControl.LocalPlayer);
             _time += Time.deltaTime;
             if (_time >= Interval)
             {

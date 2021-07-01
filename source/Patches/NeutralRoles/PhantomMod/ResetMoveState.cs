@@ -10,7 +10,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
         {
             if (!__instance.myPlayer.Is(RoleEnum.Phantom)) return;
 
-            var role = Role.GetRole<Phantom>(__instance.myPlayer);
+            var role = BaseRole.GetRole<Phantom>(__instance.myPlayer);
             __instance.myPlayer.Collider.enabled = !role.Caught;
         }
     }

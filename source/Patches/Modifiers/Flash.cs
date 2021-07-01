@@ -11,13 +11,13 @@ namespace TownOfUs.Modifiers
             {
                 if (player.Is(RoleEnum.Morphling))
                 {
-                    var morphling = Role.GetRole<Morphling>(player);
+                    var morphling = BaseRole.GetRole<Morphling>(player);
                     return morphling.MorphedPlayer != null && morphling.MorphedPlayer.Is(ModifierEnum.Flash);
                 }
 
                 if (player.Is(RoleEnum.Glitch))
                 {
-                    var glitch = Role.GetRole<Glitch>(player);
+                    var glitch = BaseRole.GetRole<Glitch>(player);
                     return glitch.MimicTarget != null && glitch.MimicTarget.Is(ModifierEnum.Flash);
                 }
 
@@ -26,13 +26,13 @@ namespace TownOfUs.Modifiers
 
             if (player.Is(RoleEnum.Morphling))
             {
-                var morphling = Role.GetRole<Morphling>(player);
+                var morphling = BaseRole.GetRole<Morphling>(player);
                 return morphling.MorphedPlayer == null;
             }
 
             if (player.Is(RoleEnum.Glitch))
             {
-                var glitch = Role.GetRole<Glitch>(player);
+                var glitch = BaseRole.GetRole<Glitch>(player);
                 return glitch.MimicTarget == null;
             }
 

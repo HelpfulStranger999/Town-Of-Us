@@ -10,7 +10,7 @@ namespace TownOfUs.NeutralRoles.GlitchMod
     {
         private static void Postfix(IntroCutscene._CoBegin_d__14 __instance)
         {
-            var glitch = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch);
+            var glitch = BaseRole.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch);
             if (glitch != null)
             {
                 ((Glitch) glitch).LastMimic = DateTime.UtcNow;

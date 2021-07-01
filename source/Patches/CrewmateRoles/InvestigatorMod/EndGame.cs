@@ -7,7 +7,7 @@ namespace TownOfUs.CrewmateRoles.InvestigatorMod
     {
         public static void Reset()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Investigator)) ((Investigator) role).AllPrints.Clear();
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Investigator)) ((Investigator) role).AllPrints.Clear();
         }
 
         [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.ExitGame))]

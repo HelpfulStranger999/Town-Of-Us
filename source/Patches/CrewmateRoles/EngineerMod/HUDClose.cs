@@ -16,7 +16,7 @@ namespace TownOfUs.CrewmateRoles.EngineerMod
         public static void Postfix(Object obj)
         {
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
-            foreach (var role in Role.GetRoles(RoleEnum.Engineer))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Engineer))
             {
                 var engineer = (Engineer) role;
                 if (CustomGameOptions.EngineerFixPer == EngineerFixPer.Round) engineer.UsedThisRound = false;

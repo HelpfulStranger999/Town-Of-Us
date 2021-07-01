@@ -23,7 +23,7 @@ namespace TownOfUs.CrewmateRoles.SeerMod
 
         private static void UpdateMeeting(MeetingHud __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Seer))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Seer))
             {
                 var seerRole = (Seer) role;
                 if (!seerRole.Investigated.Contains(PlayerControl.LocalPlayer.PlayerId)) continue;
@@ -59,7 +59,7 @@ namespace TownOfUs.CrewmateRoles.SeerMod
                                 CustomGameOptions.SeerInfo == SeerInfo.Role ? " (Imp)" : "", true);
                             break;
                         default:
-                            var role = Role.GetRole(player);
+                            var role = BaseRole.GetRole(player);
                             state.NameText.color = CustomGameOptions.SeerInfo == SeerInfo.Faction
                                 ? role.FactionColor
                                 : role.Color;
@@ -78,7 +78,7 @@ namespace TownOfUs.CrewmateRoles.SeerMod
             if (PlayerControl.AllPlayerControls.Count <= 1) return;
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
-            foreach (var role in Role.GetRoles(RoleEnum.Seer))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Seer))
             {
                 var seerRole = (Seer) role;
                 if (!seerRole.Investigated.Contains(PlayerControl.LocalPlayer.PlayerId)) continue;
@@ -90,7 +90,7 @@ namespace TownOfUs.CrewmateRoles.SeerMod
 
             if (MeetingHud.Instance != null) UpdateMeeting(MeetingHud.Instance);
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Seer)) return;
-            var seer = Role.GetRole<Seer>(PlayerControl.LocalPlayer);
+            var seer = BaseRole.GetRole<Seer>(PlayerControl.LocalPlayer);
             if (MeetingHud.Instance != null) UpdateMeeting(MeetingHud.Instance, seer);
 
 
@@ -115,7 +115,7 @@ namespace TownOfUs.CrewmateRoles.SeerMod
                             CustomGameOptions.SeerInfo == SeerInfo.Role ? " (Imp)" : "");
                         break;
                     default:
-                        var role = Role.GetRole(player);
+                        var role = BaseRole.GetRole(player);
                         player.nameText.color = CustomGameOptions.SeerInfo == SeerInfo.Faction
                             ? role.FactionColor
                             : role.Color;

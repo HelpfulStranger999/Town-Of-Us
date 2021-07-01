@@ -11,7 +11,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
         {
             if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask) return true;
 
-            foreach (var role in Role.AllRoles)
+            foreach (var role in BaseRole.AllRoles)
                 if (role.RoleType == RoleEnum.Phantom)
                     ((Phantom) role).Loses();
 

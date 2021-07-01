@@ -11,7 +11,7 @@ namespace TownOfUs.ImpostorRoles.CamouflageMod
         public static void Postfix(Object obj)
         {
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
-            foreach (var role in Role.GetRoles(RoleEnum.Camouflager))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Camouflager))
             {
                 var camouflager = (Camouflager) role;
                 camouflager.LastCamouflaged = DateTime.UtcNow;

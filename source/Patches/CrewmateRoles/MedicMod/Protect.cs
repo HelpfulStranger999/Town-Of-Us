@@ -12,7 +12,7 @@ namespace TownOfUs.CrewmateRoles.MedicMod
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton) return true;
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Medic);
             if (!flag) return true;
-            var role = Role.GetRole<Medic>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Medic>(PlayerControl.LocalPlayer);
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             if (role.UsedAbility || role.ClosestPlayer == null) return false;

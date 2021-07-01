@@ -15,7 +15,7 @@ namespace TownOfUs.CrewmateRoles.SheriffMod
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton) return true;
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Sheriff);
             if (!flag) return true;
-            var role = Role.GetRole<Sheriff>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Sheriff>(PlayerControl.LocalPlayer);
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             var flag2 = role.SheriffKillTimer() == 0f;

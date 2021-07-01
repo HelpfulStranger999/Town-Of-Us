@@ -12,7 +12,7 @@ namespace TownOfUs.NeutralRoles.JesterMod
             if (exiled == null) return;
             var player = exiled.Object;
 
-            var role = Role.GetRole(player);
+            var role = BaseRole.GetRole(player);
             if (role == null) return;
             if (role.RoleType == RoleEnum.Jester) ((Jester) role).Wins();
         }

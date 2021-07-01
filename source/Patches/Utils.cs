@@ -1,15 +1,16 @@
-﻿using System;
+﻿using HarmonyLib;
+using Hazel;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using HarmonyLib;
-using Hazel;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.CustomHats;
 using TownOfUs.Extensions;
 using TownOfUs.ImpostorRoles.CamouflageMod;
 using TownOfUs.Roles;
 using TownOfUs.Roles.Modifiers;
+using TownOfUs.Services;
 using UnhollowerBaseLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -21,7 +22,6 @@ namespace TownOfUs
     public static class Utils
     {
         internal static bool ShowDeadBodies = false;
-
 
         public static Dictionary<PlayerControl, Color> oldColors = new Dictionary<PlayerControl, Color>();
 
@@ -49,17 +49,17 @@ namespace TownOfUs
             );
 
             if (Player.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance
-                .AllSkins.ToArray()[(int) MorphedPlayer.Data.SkinId].ProdId)
+                .AllSkins.ToArray()[(int)MorphedPlayer.Data.SkinId].ProdId)
                 SetSkin(Player, MorphedPlayer.Data.SkinId);
 
             if (Player.CurrentPet == null || Player.CurrentPet.ProdId !=
-                DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int) MorphedPlayer.Data.PetId].ProdId)
+                DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int)MorphedPlayer.Data.PetId].ProdId)
             {
                 if (Player.CurrentPet != null) Object.Destroy(Player.CurrentPet.gameObject);
 
                 Player.CurrentPet =
                     Object.Instantiate(
-                        DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int) MorphedPlayer.Data.PetId]);
+                        DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int)MorphedPlayer.Data.PetId]);
                 Player.CurrentPet.transform.position = Player.transform.position;
                 Player.CurrentPet.Source = Player;
                 Player.CurrentPet.Visible = Player.Visible;
@@ -86,19 +86,17 @@ namespace TownOfUs
             );
 
             if (Player.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance
-                .AllSkins.ToArray()[(int) Player.Data.SkinId].ProdId)
+                .AllSkins.ToArray()[(int)Player.Data.SkinId].ProdId)
                 SetSkin(Player, Player.Data.SkinId);
-
 
             if (Player.CurrentPet != null) Object.Destroy(Player.CurrentPet.gameObject);
 
             Player.CurrentPet =
                 Object.Instantiate(
-                    DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int) Player.Data.PetId]);
+                    DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int)Player.Data.PetId]);
             Player.CurrentPet.transform.position = Player.transform.position;
             Player.CurrentPet.Source = Player;
             Player.CurrentPet.Visible = Player.Visible;
-
 
             PlayerControl.SetPlayerMaterialColors(colorId, Player.CurrentPet.rend);
 
@@ -134,12 +132,10 @@ namespace TownOfUs
             foreach (var player in PlayerControl.AllPlayerControls) Unmorph(player);
         }
 
-
         public static bool IsCrewmate(this PlayerControl player)
         {
             return GetRole(player) == RoleEnum.Crewmate;
         }
-
 
         public static void AddUnique<T>(this Il2CppSystem.Collections.Generic.List<T> self, T item)
             where T : IDisconnectHandler
@@ -154,7 +150,7 @@ namespace TownOfUs
 
         public static bool Is(this PlayerControl player, RoleEnum roleType)
         {
-            return Role.GetRole(player)?.RoleType == roleType;
+            return RoleService.Instance.GetRoles().GetRoleOfPlayer(player)?.RoleType == roleType;
         }
 
         public static bool Is(this PlayerControl player, ModifierEnum modifierType)
@@ -164,7 +160,7 @@ namespace TownOfUs
 
         public static bool Is(this PlayerControl player, Faction faction)
         {
-            return Role.GetRole(player)?.Faction == faction;
+            return RoleService.Instance.GetRoles().GetRoleOfPlayer(player)?.Faction == faction;
         }
 
         public static RoleEnum GetRole(PlayerControl player)
@@ -172,7 +168,7 @@ namespace TownOfUs
             if (player == null) return RoleEnum.None;
             if (player.Data == null) return RoleEnum.None;
 
-            var role = Role.GetRole(player);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer(player);
             if (role != null) return role.RoleType;
 
             return player.Data.IsImpostor ? RoleEnum.Impostor : RoleEnum.Crewmate;
@@ -205,18 +201,18 @@ namespace TownOfUs
 
         public static bool isShielded(this PlayerControl player)
         {
-            return Role.GetRoles(RoleEnum.Medic).Any(role =>
+            return RoleService.Instance.GetRoles().GetRoles<Medic>().Any(role =>
             {
-                var shieldedPlayer = ((Medic) role).ShieldedPlayer;
+                var shieldedPlayer = ((Medic)role).ShieldedPlayer;
                 return shieldedPlayer != null && player.PlayerId == shieldedPlayer.PlayerId;
             });
         }
 
         public static Medic getMedic(this PlayerControl player)
         {
-            return Role.GetRoles(RoleEnum.Medic).FirstOrDefault(role =>
+            return RoleService.Instance.GetRoles().GetRoles<Medic>().FirstOrDefault(role =>
             {
-                var shieldedPlayer = ((Medic) role).ShieldedPlayer;
+                var shieldedPlayer = ((Medic)role).ShieldedPlayer;
                 return shieldedPlayer != null && player.PlayerId == shieldedPlayer.PlayerId;
             }) as Medic;
         }
@@ -296,7 +292,6 @@ namespace TownOfUs
             return closestPlayer = closeEnough ? player : null;
         }
 
-
         public static double getDistBetweenPlayers(PlayerControl player, PlayerControl refplayer)
         {
             var truePosition = refplayer.GetTruePosition();
@@ -304,12 +299,11 @@ namespace TownOfUs
             return Vector2.Distance(truePosition, truePosition2);
         }
 
-
         public static void RpcMurderPlayer(PlayerControl killer, PlayerControl target)
         {
             MurderPlayer(killer, target);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.BypassKill, SendOption.Reliable, -1);
+                (byte)CustomRPC.BypassKill, SendOption.Reliable, -1);
             writer.Write(killer.PlayerId);
             writer.Write(target.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -386,7 +380,7 @@ namespace TownOfUs
 
                 if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Glitch))
                 {
-                    var glitch = Role.GetRole<Glitch>(killer);
+                    var glitch = RoleService.Instance.GetRoles().GetRole<Glitch>();
                     glitch.LastKill = DateTime.UtcNow.AddSeconds(2 * CustomGameOptions.GlitchKillCooldown);
                     glitch.Player.SetKillTimer(CustomGameOptions.GlitchKillCooldown * 3);
                     return;
@@ -421,7 +415,7 @@ namespace TownOfUs
                 fullscreen.enabled = true;
                 fullscreen.color = color;
             }
-            
+
             yield return new WaitForSeconds(waitfor);
 
             if (HudManager.InstanceExists && HudManager.Instance.FullScreen)
@@ -451,7 +445,6 @@ namespace TownOfUs
         {
             ShipStatus.RpcEndGame(reason, showAds);
         }
-
 
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetInfected))]
         public static class PlayerControl_SetInfected

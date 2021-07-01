@@ -14,7 +14,7 @@ namespace TownOfUs.CrewmateRoles.SeerMod
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton) return true;
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Seer);
             if (!flag) return true;
-            var role = Role.GetRole<Seer>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Seer>(PlayerControl.LocalPlayer);
             if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null) return false;
             var flag2 = role.SeerTimer() == 0f;
             if (!flag2) return false;

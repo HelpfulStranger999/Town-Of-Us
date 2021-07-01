@@ -14,7 +14,7 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Altruist)) return;
 
-            var role = Role.GetRole<Altruist>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Altruist>(PlayerControl.LocalPlayer);
 
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;

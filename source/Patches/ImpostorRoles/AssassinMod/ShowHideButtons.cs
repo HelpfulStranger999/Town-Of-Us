@@ -52,7 +52,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
         public static void Prefix(MeetingHud __instance)
         {
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Assassin)) return;
-            var assassin = Role.GetRole<Assassin>(PlayerControl.LocalPlayer);
+            var assassin = BaseRole.GetRole<Assassin>(PlayerControl.LocalPlayer);
             HideButtons(assassin);
         }
     }

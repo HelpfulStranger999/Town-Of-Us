@@ -9,7 +9,7 @@ namespace TownOfUs.ImpostorRoles.SwooperMod
     {
         public static void Postfix(ShipStatus __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Swooper))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Swooper))
             {
                 var miner = (Swooper) role;
                 miner.LastSwooped = DateTime.UtcNow;

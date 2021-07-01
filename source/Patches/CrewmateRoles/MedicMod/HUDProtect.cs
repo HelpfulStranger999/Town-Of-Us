@@ -21,7 +21,7 @@ namespace TownOfUs.CrewmateRoles.MedicMod
             var isDead = data.IsDead;
             var protectButton = DestroyableSingleton<HudManager>.Instance.KillButton;
 
-            var role = Role.GetRole<Medic>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Medic>(PlayerControl.LocalPlayer);
 
 
             if (isDead)

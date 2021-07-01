@@ -41,7 +41,7 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
             public static bool Prefix(MeetingHud __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Swapper)) return true;
-                var swapper = Role.GetRole<Swapper>(PlayerControl.LocalPlayer);
+                var swapper = BaseRole.GetRole<Swapper>(PlayerControl.LocalPlayer);
                 foreach (var button in swapper.Buttons.Where(button => button != null))
                 {
                     if (button.GetComponent<SpriteRenderer>().sprite == AddButton.DisabledSprite)
@@ -108,7 +108,7 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
 
                     __instance.RpcVotingComplete(array, exiled, tie);
                     
-                    foreach (var role in Role.GetRoles(RoleEnum.Mayor))
+                    foreach (var role in BaseRole.GetRoles(RoleEnum.Mayor))
                     {
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                             (byte) CustomRPC.SetExtraVotes, SendOption.Reliable, -1);

@@ -14,7 +14,7 @@ namespace TownOfUs.ImpostorRoles.CamouflageMod
         public static void Postfix(HudManager __instance)
         {
             CamouflagerEnabled = false;
-            foreach (var role in Role.GetRoles(RoleEnum.Camouflager))
+            foreach (var role in BaseRole.GetRoles(RoleEnum.Camouflager))
             {
                 var camouflager = (Camouflager) role;
                 if (camouflager.Camouflaged)

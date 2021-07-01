@@ -61,7 +61,7 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
 
             if (player.isLover() && CustomGameOptions.BothLoversDie)
             {
-                var lover = Role.GetRole<Lover>(player).OtherLover.Player;
+                var lover = BaseRole.GetRole<BaseLover>(player).OtherLover.Player;
 
                 lover.Revive();
                 Murder.KilledPlayers.Remove(

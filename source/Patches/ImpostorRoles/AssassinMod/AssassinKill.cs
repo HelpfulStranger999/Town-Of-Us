@@ -78,7 +78,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
 
                 if (player.Is(RoleEnum.Swapper))
                 {
-                    var buttons = Role.GetRole<Swapper>(player).Buttons;
+                    var buttons = BaseRole.GetRole<Swapper>(player).Buttons;
                     foreach (var button in buttons)
                     {
                         button.SetActive(false);
@@ -88,7 +88,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             }
             player.Die(DeathReason.Kill);
             if (checkLover && player.isLover() && CustomGameOptions.BothLoversDie)
-                MurderPlayer(Role.GetRole<Lover>(player).OtherLover.Player, false);
+                MurderPlayer(BaseRole.GetRole<BaseLover>(player).OtherLover.Player, false);
 
             var meetingHud = MeetingHud.Instance;
             if (amOwner)

@@ -13,7 +13,7 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Undertaker))
             {
-                var role = Role.GetRole<Undertaker>(PlayerControl.LocalPlayer);
+                var role = BaseRole.GetRole<Undertaker>(PlayerControl.LocalPlayer);
                 role.DragDropButton.renderer.sprite = TownOfUs.DragSprite;
                 role.CurrentlyDragging = null;
                 role.LastDragged = DateTime.UtcNow;

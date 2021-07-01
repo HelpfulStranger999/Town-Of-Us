@@ -17,7 +17,7 @@ namespace TownOfUs.ImpostorRoles.MorphlingMod
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Morphling)) return;
-            var role = Role.GetRole<Morphling>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Morphling>(PlayerControl.LocalPlayer);
             if (role.MorphButton == null)
             {
                 role.MorphButton = Object.Instantiate(__instance.KillButton, HudManager.Instance.transform);

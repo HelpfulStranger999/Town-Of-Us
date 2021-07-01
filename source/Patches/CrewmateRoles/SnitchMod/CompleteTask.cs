@@ -17,7 +17,7 @@ namespace TownOfUs.CrewmateRoles.SnitchMod
             var taskinfos = __instance.Data.Tasks.ToArray();
 
             var tasksLeft = taskinfos.Count(x => !x.Complete);
-            var role = Role.GetRole<Snitch>(__instance);
+            var role = BaseRole.GetRole<Snitch>(__instance);
             role.TasksLeft = tasksLeft;
             switch (tasksLeft)
             {

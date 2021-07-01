@@ -15,7 +15,7 @@ namespace TownOfUs.ImpostorRoles.CamouflageMod
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Camouflager)) return;
-            var role = Role.GetRole<Camouflager>(PlayerControl.LocalPlayer);
+            var role = BaseRole.GetRole<Camouflager>(PlayerControl.LocalPlayer);
             if (role.CamouflageButton == null)
             {
                 role.CamouflageButton = Object.Instantiate(__instance.KillButton, HudManager.Instance.transform);

@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using TownOfUs.Extensions;
-using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs
@@ -17,7 +17,7 @@ namespace TownOfUs
                 {
                     var str = color.ToHtmlStringRGBA().Substring(0, 6);
                     var url = "http://localhost:42269/setColor?color=" + str;
-                    var request = (HttpWebRequest) WebRequest.Create(new Uri(url));
+                    var request = (HttpWebRequest)WebRequest.Create(new Uri(url));
                     request.Method = "GET";
                     request.Timeout = 2 * 1000;
                     request.GetResponse();
@@ -37,7 +37,7 @@ namespace TownOfUs
                 return;
             }
 
-            SetLights(Role.GetRole(PlayerControl.LocalPlayer).Color);
+            SetLights(RoleService.Instance.GetRoles().GetRoleOfPlayer(PlayerControl.LocalPlayer).Color);
         }
     }
 }

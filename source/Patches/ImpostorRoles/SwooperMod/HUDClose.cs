@@ -13,7 +13,7 @@ namespace TownOfUs.ImpostorRoles.SwooperMod
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Swooper))
             {
-                var role = Role.GetRole<Swooper>(PlayerControl.LocalPlayer);
+                var role = BaseRole.GetRole<Swooper>(PlayerControl.LocalPlayer);
                 role.LastSwooped = DateTime.UtcNow;
             }
         }
