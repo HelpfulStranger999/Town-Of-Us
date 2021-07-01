@@ -1,3 +1,4 @@
+using Hazel;
 using System.Collections.Generic;
 using TownOfUs.CustomHats;
 using TownOfUs.ImpostorRoles.CamouflageMod;
@@ -64,6 +65,14 @@ namespace TownOfUs.Roles
                 -0.5f
             );
             return Player.name + "\n" + "Crewmate";
+        }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetSnitch, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 }

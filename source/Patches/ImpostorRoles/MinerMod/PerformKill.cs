@@ -4,6 +4,7 @@ using HarmonyLib;
 using Hazel;
 using TownOfUs.Extensions;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -18,7 +19,7 @@ namespace TownOfUs.ImpostorRoles.MinerMod
             if (!flag) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
-            var role = BaseRole.GetRole<Miner>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Miner>(PlayerControl.LocalPlayer);
             if (__instance == role.MineButton)
             {
                 if (__instance.isCoolingDown) return false;

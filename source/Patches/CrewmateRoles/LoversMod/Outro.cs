@@ -2,6 +2,7 @@ using System.Linq;
 using HarmonyLib;
 using TMPro;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.LoversMod
@@ -28,9 +29,8 @@ namespace TownOfUs.CrewmateRoles.LoversMod
             }
 
 
-            if (!BaseRole.AllRoles.Where(x => x.RoleType == RoleEnum.Lover || x.RoleType == RoleEnum.LoverImpostor)
-                .Any(x => ((BaseLover) x).LoveCoupleWins)) return;
-            if (BaseRole.GetRoles(RoleEnum.Jester).Any(x => ((Jester) x).VotedOut)) return;
+            if (!RoleService.Instance.GetRoles().GetRoles<BaseLover>().Any(x => x.LoveCoupleWins)) return;
+            if (RoleService.Instance.GetRoles().GetRoles<Jester>().Any(x => ((Jester) x).VotedOut)) return;
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
             if (array[0] != null)
             {

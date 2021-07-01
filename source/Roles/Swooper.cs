@@ -1,3 +1,4 @@
+using Hazel;
 using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -76,6 +77,14 @@ namespace TownOfUs.Roles
             LastSwooped = DateTime.UtcNow;
             Utils.Unmorph(Player);
             Player.MyRend.color = Color.white;
+        }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetSwooper, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 }

@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.NeutralRoles.PhantomMod
 {
@@ -10,7 +11,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
         {
             if (!__instance.myPlayer.Is(RoleEnum.Phantom)) return;
 
-            var role = BaseRole.GetRole<Phantom>(__instance.myPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Phantom>(__instance.myPlayer);
             __instance.myPlayer.Collider.enabled = !role.Caught;
         }
     }

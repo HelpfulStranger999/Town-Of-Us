@@ -42,7 +42,7 @@ namespace TownOfUs.Roles
         public PlayerControl Player
         {
             get => _player;
-            set
+            protected set
             {
                 if (_player != null) _player.nameText.color = Color.white;
 
@@ -78,6 +78,8 @@ namespace TownOfUs.Roles
         public string PlayerName { get; set; }
 
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
+
+        public abstract void SendSetRpc();
 
         private bool Equals(BaseRole other)
         {
@@ -115,6 +117,11 @@ namespace TownOfUs.Roles
 
         protected virtual void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
         {
+        }
+
+        public void AssignPlayer(PlayerControl player)
+        {
+            Player = player;
         }
 
         public static void NobodyWinsFunc()

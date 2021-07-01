@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
-using HarmonyLib;
+﻿using HarmonyLib;
+using System;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.NeutralRoles.GlitchMod
 {
@@ -10,12 +10,11 @@ namespace TownOfUs.NeutralRoles.GlitchMod
     {
         private static void Postfix(IntroCutscene._CoBegin_d__14 __instance)
         {
-            var glitch = BaseRole.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch);
-            if (glitch != null)
+            if (RoleService.Instance.GetRoles().TryGetRole<Glitch>(out var glitch))
             {
-                ((Glitch) glitch).LastMimic = DateTime.UtcNow;
-                ((Glitch) glitch).LastHack = DateTime.UtcNow;
-                ((Glitch) glitch).LastKill = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialGlitchKillCooldown +
+                glitch.LastMimic = DateTime.UtcNow;
+                glitch.LastHack = DateTime.UtcNow;
+                glitch.LastKill = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialGlitchKillCooldown +
                                                                         CustomGameOptions.GlitchKillCooldown * -1);
             }
         }

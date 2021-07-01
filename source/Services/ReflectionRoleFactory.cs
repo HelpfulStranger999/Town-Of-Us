@@ -38,7 +38,7 @@ namespace TownOfUs.Services
             var parameters = new List<object>();
             foreach (var parameter in validConstructor.GetParameters())
             {
-                var loadedDependency = dependencies.FirstOrDefault(dependency => parameter.ParameterType == dependencies.GetType();
+                var loadedDependency = dependencies.FirstOrDefault(dependency => parameter.ParameterType == dependencies.GetType());
                 if (loadedDependency == null) loadedDependency = parameter.DefaultValue;
                 parameters.Add(loadedDependency);
             }

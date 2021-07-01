@@ -1,6 +1,7 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.NeutralRoles.ExecutionerMod
@@ -27,12 +28,12 @@ namespace TownOfUs.NeutralRoles.ExecutionerMod
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Executioner)) return;
-            var role = BaseRole.GetRole<Executioner>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Executioner>(PlayerControl.LocalPlayer);
 
             if (role.target == null)
             {
                 var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.ExecutionerToJester, SendOption.Reliable, -1);
+                    (byte)CustomRPC.ExecutionerToJester, SendOption.Reliable, -1);
                 writer2.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
                 ExeToJes(PlayerControl.LocalPlayer);
@@ -48,7 +49,7 @@ namespace TownOfUs.NeutralRoles.ExecutionerMod
             if (role.TargetVotedOut) return;
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.ExecutionerToJester, SendOption.Reliable, -1);
+                (byte)CustomRPC.ExecutionerToJester, SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
@@ -58,8 +59,7 @@ namespace TownOfUs.NeutralRoles.ExecutionerMod
         public static void ExeToJes(PlayerControl player)
         {
             player.myTasks.RemoveAt(0);
-            BaseRole.RoleDictionary.Remove(player.PlayerId);
-
+            RoleService.Instance.GetRoles().RemovePlayer(player.PlayerId);
 
             if (CustomGameOptions.OnTargetDead == OnTargetDead.Jester)
             {

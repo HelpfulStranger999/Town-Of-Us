@@ -1,7 +1,8 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
+using System;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.SeerMod
@@ -14,7 +15,7 @@ namespace TownOfUs.CrewmateRoles.SeerMod
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton) return true;
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Seer);
             if (!flag) return true;
-            var role = BaseRole.GetRole<Seer>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Seer>(PlayerControl.LocalPlayer);
             if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null) return false;
             var flag2 = role.SeerTimer() == 0f;
             if (!flag2) return false;
@@ -25,9 +26,8 @@ namespace TownOfUs.CrewmateRoles.SeerMod
             if (role.ClosestPlayer == null) return false;
             var playerId = role.ClosestPlayer.PlayerId;
 
-
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.Investigate, SendOption.Reliable, -1);
+                (byte)CustomRPC.Investigate, SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);

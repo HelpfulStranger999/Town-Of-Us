@@ -1,7 +1,8 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
+using System;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.MorphlingMod
@@ -18,7 +19,7 @@ namespace TownOfUs.ImpostorRoles.MorphlingMod
             if (!flag) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
-            var role = BaseRole.GetRole<Morphling>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Morphling>(PlayerControl.LocalPlayer);
             var target = role.ClosestPlayer;
             if (__instance == role.MorphButton)
             {
@@ -38,7 +39,7 @@ namespace TownOfUs.ImpostorRoles.MorphlingMod
                     if (__instance.isCoolingDown) return false;
                     if (role.MorphTimer() != 0) return false;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte) CustomRPC.Morph,
+                        (byte)CustomRPC.Morph,
                         SendOption.Reliable, -1);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer.Write(role.SampledPlayer.PlayerId);

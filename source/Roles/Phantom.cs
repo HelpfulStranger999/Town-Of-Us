@@ -1,3 +1,4 @@
+using Hazel;
 using UnityEngine;
 
 namespace TownOfUs.Roles
@@ -57,6 +58,14 @@ namespace TownOfUs.Roles
             Player.CurrentPet.transform.position = Player.transform.position;
             Player.CurrentPet.Source = Player;
             Player.CurrentPet.Visible = Player.Visible;
+        }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetPhantom, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 }

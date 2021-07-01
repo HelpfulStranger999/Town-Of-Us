@@ -1,6 +1,7 @@
-using System;
 using HarmonyLib;
+using System;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using Object = UnityEngine.Object;
 
 namespace TownOfUs.ImpostorRoles.MorphlingMod
@@ -13,7 +14,7 @@ namespace TownOfUs.ImpostorRoles.MorphlingMod
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Morphling))
             {
-                var role = BaseRole.GetRole<Morphling>(PlayerControl.LocalPlayer);
+                var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Morphling>(PlayerControl.LocalPlayer);
                 role.MorphButton.renderer.sprite = TownOfUs.SampleSprite;
                 role.SampledPlayer = null;
                 role.LastMorphed = DateTime.UtcNow;

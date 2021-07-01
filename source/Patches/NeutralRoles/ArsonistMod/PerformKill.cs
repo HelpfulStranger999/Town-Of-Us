@@ -1,7 +1,8 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
+using System;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.NeutralRoles.ArsonistMod
 {
@@ -14,14 +15,14 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
             if (!flag) return true;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
-            var role = BaseRole.GetRole<Arsonist>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Arsonist>(PlayerControl.LocalPlayer);
             if (role.IgniteUsed) return false;
             if (__instance == role.IgniteButton)
             {
                 if (!__instance.isActiveAndEnabled) return false;
                 if (!role.CheckEveryoneDoused()) return false;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.Ignite, SendOption.Reliable, -1);
+                    (byte)CustomRPC.Ignite, SendOption.Reliable, -1);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Ignite(role);
@@ -38,7 +39,7 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
                         GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
             if (!flag3) return false;
             var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.Douse, SendOption.Reliable, -1);
+                (byte)CustomRPC.Douse, SendOption.Reliable, -1);
             writer2.Write(PlayerControl.LocalPlayer.PlayerId);
             writer2.Write(role.ClosestPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer2);
@@ -63,7 +64,6 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
             }
 
             Utils.MurderPlayer(role.Player, role.Player);
-
 
             role.IgniteUsed = true;
         }

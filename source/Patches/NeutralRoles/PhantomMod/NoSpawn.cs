@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.NeutralRoles.PhantomMod
 {
@@ -10,7 +11,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
         {
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
             {
-                var caught = BaseRole.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught;
+                var caught = RoleService.Instance.GetRoles().GetRoleOfPlayer<Phantom>(PlayerControl.LocalPlayer).Caught;
                 if (!caught)
                 {
                     __instance.Close();

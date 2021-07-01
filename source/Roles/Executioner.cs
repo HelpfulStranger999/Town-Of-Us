@@ -1,3 +1,4 @@
+using Hazel;
 using Il2CppSystem.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +22,14 @@ namespace TownOfUs.Roles
             RoleType = RoleEnum.Executioner;
             Faction = Faction.Neutral;
             Scale = 1.4f;
+        }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetExecutioner, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
         protected override void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)

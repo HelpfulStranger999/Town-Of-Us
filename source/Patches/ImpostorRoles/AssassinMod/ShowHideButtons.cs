@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine.UI;
 
 namespace TownOfUs.ImpostorRoles.AssassinMod
@@ -48,11 +49,10 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             role.Guesses.Remove(targetId);
         }
 
-
         public static void Prefix(MeetingHud __instance)
         {
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Assassin)) return;
-            var assassin = BaseRole.GetRole<Assassin>(PlayerControl.LocalPlayer);
+            var assassin = RoleService.Instance.GetRoles().GetRoleOfPlayer<Assassin>(PlayerControl.LocalPlayer);
             HideButtons(assassin);
         }
     }

@@ -1,6 +1,7 @@
-using System.Linq;
 using HarmonyLib;
+using System.Linq;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.MinerMod
@@ -16,7 +17,7 @@ namespace TownOfUs.ImpostorRoles.MinerMod
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Miner)) return;
-            var role = BaseRole.GetRole<Miner>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Miner>(PlayerControl.LocalPlayer);
             if (role.MineButton == null)
             {
                 role.MineButton = Object.Instantiate(__instance.KillButton, HudManager.Instance.transform);

@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.CrewmateRoles.TimeLordMod
 {
@@ -21,8 +22,7 @@ namespace TownOfUs.CrewmateRoles.TimeLordMod
             var isDead = data.IsDead;
             var rewindButton = DestroyableSingleton<HudManager>.Instance.KillButton;
 
-            var role = BaseRole.GetRole<TimeLord>(PlayerControl.LocalPlayer);
-
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<TimeLord>(PlayerControl.LocalPlayer);
 
             if (isDead)
             {

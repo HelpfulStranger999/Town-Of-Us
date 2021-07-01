@@ -1,6 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
-using UnityEngine;
+using TownOfUs.Services;
 
 namespace TownOfUs.NeutralRoles.PhantomMod
 {
@@ -15,12 +15,12 @@ namespace TownOfUs.NeutralRoles.PhantomMod
         {
             var playerControl = playerInfo.Object;
 
-            if (playerControl.Is(RoleEnum.Phantom) && BaseRole.GetRole<Phantom>(playerControl).Caught)
+            if (playerControl.Is(RoleEnum.Phantom) && RoleService.Instance.GetRoles().GetRoleOfPlayer<Phantom>(playerControl).Caught)
             {
                 __result = float.MaxValue;
                 return canUse = couldUse = false;
             }
-            
+
             return true;
         }
     }

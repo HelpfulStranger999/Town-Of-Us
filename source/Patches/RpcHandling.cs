@@ -320,17 +320,20 @@ namespace TownOfUs
                         break;
 
                     case CustomRPC.SetCouple:
-                        var id = reader.ReadByte();
-                        var id2 = reader.ReadByte();
-                        var b1 = reader.ReadByte();
-                        var lover1 = Utils.PlayerById(id);
-                        var lover2 = Utils.PlayerById(id2);
+                        var firstPlayer = Utils.PlayerById(reader.ReadByte());
+                        var secondPlayer = Utils.PlayerById(reader.ReadByte());
+                        var hasLovingImpostor = reader.ReadByte();
 
-                        var roleLover1 = new BaseLover(lover1, 1, b1 == 0);
-                        var roleLover2 = new BaseLover(lover2, 2, b1 == 0);
+                        BaseLover firstLover = firstPlayer.Data.IsImpostor ?
+                            new LovingImpostor(firstPlayer) :
+                            (BaseLover)new Lover(firstPlayer);
 
-                        roleLover1.OtherLover = roleLover2;
-                        roleLover2.OtherLover = roleLover1;
+                        BaseLover secondLover = secondPlayer.Data.IsImpostor ?
+                            new LovingImpostor(secondPlayer) :
+                            (BaseLover)new Lover(secondPlayer);
+
+                        firstLover.SetLover(secondLover);
+                        secondLover.SetLover(firstLover);
 
                         break;
 
@@ -570,7 +573,7 @@ namespace TownOfUs
                         new Altruist(Utils.PlayerById(reader.ReadByte()));
                         break;
                     case CustomRPC.SetBigBoi:
-                        new BigBoi(Utils.PlayerById(reader.ReadByte()));
+                        new BigBoiModifier(Utils.PlayerById(reader.ReadByte()));
                         break;
                     case CustomRPC.AltruistRevive:
                         readByte1 = reader.ReadByte();
@@ -794,7 +797,7 @@ namespace TownOfUs
                     CrewmateRoles.Add((typeof(Altruist), CustomRPC.SetAltruist, CustomGameOptions.AltruistOn));
 
                 if (Check(CustomGameOptions.BigBoiOn))
-                    GlobalModifiers.Add((typeof(BigBoi), CustomRPC.SetBigBoi, CustomGameOptions.BigBoiOn));
+                    GlobalModifiers.Add((typeof(BigBoiModifier), CustomRPC.SetBigBoi, CustomGameOptions.BigBoiOn));
 
                 if (Check(CustomGameOptions.ButtonBarryOn))
                     GlobalModifiers.Add(

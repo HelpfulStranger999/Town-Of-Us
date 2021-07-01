@@ -1,7 +1,8 @@
-using System;
 using HarmonyLib;
 using Hazel;
+using System;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -17,6 +18,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
 
         public static void Postfix(MeetingHud __instance)
         {
+            var roleService = RoleService.Instance;
             var exiled = __instance.exiledPlayer?.Object;
             if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer) return;
             if (exiled == PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Is(RoleEnum.Jester)) return;
@@ -24,7 +26,8 @@ namespace TownOfUs.NeutralRoles.PhantomMod
 
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
             {
-                BaseRole.RoleDictionary.Remove(PlayerControl.LocalPlayer.PlayerId);
+                roleService.GetRoles().RemovePlayer(PlayerControl.LocalPlayer.PlayerId);
+                roleService.AssignRole(typeof(Phantom), PlayerControl.LocalPlayer);
                 var role = new Phantom(PlayerControl.LocalPlayer);
                 role.RegenTask();
                 Lights.SetLights();
@@ -37,11 +40,11 @@ namespace TownOfUs.NeutralRoles.PhantomMod
                 PlayerControl.LocalPlayer.gameObject.layer = LayerMask.NameToLayer("Players");
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.PhantomDied, SendOption.Reliable, -1);
+                    (byte)CustomRPC.PhantomDied, SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
 
-            if (BaseRole.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught) return;
+            if (roleService.GetRoles().GetRoleOfPlayer<Phantom>(PlayerControl.LocalPlayer).Caught) return;
             var startingVent =
                 ShipStatus.Instance.AllVents[Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
             PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(startingVent.transform.position);
@@ -52,7 +55,6 @@ namespace TownOfUs.NeutralRoles.PhantomMod
         {
             var totalTasks = PlayerControl.GameOptions.NumCommonTasks + PlayerControl.GameOptions.NumLongTasks +
                              PlayerControl.GameOptions.NumShortTasks;
-
 
             foreach (var task in player.myTasks)
                 if (task.TryCast<NormalPlayerTask>() != null)
@@ -89,7 +91,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
 
         public static void ResetRecords(NormalPlayerTask task)
         {
-            task.Data = new 
+            task.Data = new
         }*/
 
         public static void AddCollider(Phantom role)
@@ -102,16 +104,16 @@ namespace TownOfUs.NeutralRoles.PhantomMod
             button.OnMouseOut = new Button.ButtonClickedEvent();
             button.OnMouseOver = new Button.ButtonClickedEvent();
 
-            button.OnClick.AddListener((Action) (() =>
-            {
-                if (MeetingHud.Instance) return;
-                if (PlayerControl.LocalPlayer.Data.IsDead) return;
-                role.Caught = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.CatchPhantom, SendOption.Reliable, -1);
-                writer.Write(role.Player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }));
+            button.OnClick.AddListener((Action)(() =>
+           {
+               if (MeetingHud.Instance) return;
+               if (PlayerControl.LocalPlayer.Data.IsDead) return;
+               role.Caught = true;
+               var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                   (byte)CustomRPC.CatchPhantom, SendOption.Reliable, -1);
+               writer.Write(role.Player.PlayerId);
+               AmongUsClient.Instance.FinishRpcImmediately(writer);
+           }));
         }
     }
 }

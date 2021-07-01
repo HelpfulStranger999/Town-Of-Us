@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.MedicMod
@@ -27,10 +28,8 @@ namespace TownOfUs.CrewmateRoles.MedicMod
 
         public static void Postfix(HudManager __instance)
         {
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Medic))
+            foreach (var medic in RoleService.Instance.GetRoles().GetRoles<Medic>())
             {
-                var medic = (Medic) role;
-
                 var exPlayer = medic.exShielded;
                 if (exPlayer != null)
                 {
@@ -49,7 +48,6 @@ namespace TownOfUs.CrewmateRoles.MedicMod
                     StopKill.BreakShield(medic.Player.PlayerId, player.PlayerId, true);
                     continue;
                 }
-
 
                 var showShielded = CustomGameOptions.ShowShielded;
                 if (showShielded == ShieldOptions.Everyone)

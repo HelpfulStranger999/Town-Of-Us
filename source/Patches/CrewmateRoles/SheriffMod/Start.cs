@@ -1,6 +1,7 @@
-using System;
 using HarmonyLib;
+using System;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.CrewmateRoles.SheriffMod
 {
@@ -9,9 +10,9 @@ namespace TownOfUs.CrewmateRoles.SheriffMod
     {
         public static void Postfix(ShipStatus __instance)
         {
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Sheriff))
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Sheriff>())
             {
-                var sheriff = (Sheriff) role;
+                var sheriff = (Sheriff)role;
                 sheriff.LastKilled = DateTime.UtcNow;
                 sheriff.LastKilled = sheriff.LastKilled.AddSeconds(-8.0);
             }

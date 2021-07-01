@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.ImpostorRoles.AssassinMod
 {
@@ -10,7 +11,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
         {
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Assassin))
             {
-                var assassin = BaseRole.GetRole<Assassin>(PlayerControl.LocalPlayer);
+                var assassin = RoleService.Instance.GetRoles().GetRoleOfPlayer<Assassin>(PlayerControl.LocalPlayer);
                 ShowHideButtons.HideButtons(assassin);
             }
         }

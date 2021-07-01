@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Hazel;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -56,5 +57,13 @@ namespace TownOfUs.Roles
         public int RemainingKills { get; set; }
 
         public List<string> PossibleGuesses => ColorMapping.Keys.ToList();
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetAssassin, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
     }
 }

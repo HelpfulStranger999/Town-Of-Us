@@ -1,13 +1,15 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.CrewmateRoles.InvestigatorMod
 {
-    public class EndGame
+    public static class EndGame
     {
         public static void Reset()
         {
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Investigator)) ((Investigator) role).AllPrints.Clear();
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Investigator>())
+                role.AllPrints.Clear();
         }
 
         [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.ExitGame))]

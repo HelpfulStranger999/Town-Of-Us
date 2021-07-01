@@ -1,3 +1,4 @@
+using Hazel;
 using Il2CppSystem.Collections.Generic;
 using UnityEngine;
 
@@ -41,6 +42,14 @@ namespace TownOfUs.Roles
         public void Loses()
         {
             Player.Data.IsImpostor = true;
+        }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetJester, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 }

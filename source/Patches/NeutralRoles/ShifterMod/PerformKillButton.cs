@@ -1,15 +1,15 @@
-using System;
-using System.Collections;
-using System.Linq;
 using HarmonyLib;
 using Hazel;
 using Il2CppSystem.Collections.Generic;
+using System;
+using System.Collections;
 using TownOfUs.CrewmateRoles.InvestigatorMod;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.CrewmateRoles.SnitchMod;
 using TownOfUs.Extensions;
 using TownOfUs.Roles;
 using TownOfUs.Roles.Modifiers;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.NeutralRoles.ShifterMod
@@ -31,7 +31,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton) return true;
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Shifter);
             if (!flag) return true;
-            var role = BaseRole.GetRole<Shifter>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRole<Shifter>();
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             var flag2 = role.ShifterShiftTimer() == 0f;
@@ -47,7 +47,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                 var medic = role.ClosestPlayer.getMedic().Player.PlayerId;
 
                 var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                 writer1.Write(medic);
                 writer1.Write(role.ClosestPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer1);
@@ -58,7 +58,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
             }
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.Shift, SendOption.Reliable, -1);
+                (byte)CustomRPC.Shift, SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -80,15 +80,14 @@ namespace TownOfUs.NeutralRoles.ShifterMod
             var background = overlay.background;
             overlay.flameParent.SetActive(true);
             yield return new WaitForLerp(0.16666667f,
-                delegate(float t) { overlay.flameParent.transform.localScale = new Vector3(1f, t, 1f); });
+                delegate (float t) { overlay.flameParent.transform.localScale = new Vector3(1f, t, 1f); });
             yield return new WaitForSeconds(1f);
             yield return new WaitForLerp(0.16666667f,
-                delegate(float t) { overlay.flameParent.transform.localScale = new Vector3(1f, 1f - t, 1f); });
+                delegate (float t) { overlay.flameParent.transform.localScale = new Vector3(1f, 1f - t, 1f); });
             overlay.flameParent.SetActive(false);
             overlay.showAll = null;
             renderer.sprite = TownOfUs.NormalKill;
         }
-
 
         public static void Shift(Shifter shifterRole, PlayerControl other)
         {
@@ -126,11 +125,10 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                 case RoleEnum.Crewmate:
                 case RoleEnum.Altruist:
 
-                    if (role == RoleEnum.Investigator) Footprint.DestroyAll(BaseRole.GetRole<Investigator>(other));
+                    if (role == RoleEnum.Investigator) Footprint.DestroyAll(RoleService.Instance.GetRoles().GetRole<Investigator>());
 
-
-                    newRole = BaseRole.GetRole(other);
-                    newRole.Player = shifter;
+                    newRole = RoleService.Instance.GetRoles().GetRoleOfPlayer(other);
+                    newRole.AssignPlayer(shifter);
 
                     if (role == RoleEnum.Snitch) CompleteTask.Postfix(shifter);
 
@@ -158,17 +156,16 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                         Modifier.ModifierDictionary.Add(shifter.PlayerId, modifier);
                     }
 
+                    RoleService.Instance.GetRoles().RemovePlayer(shifter.PlayerId);
+                    RoleService.Instance.GetRoles().RemovePlayer(other.PlayerId);
 
-                    BaseRole.RoleDictionary.Remove(shifter.PlayerId);
-                    BaseRole.RoleDictionary.Remove(other.PlayerId);
-
-                    BaseRole.RoleDictionary.Add(shifter.PlayerId, newRole);
+                    RoleService.Instance.GetRoles().AddRole(shifter.PlayerId, newRole);
                     lovers = role == RoleEnum.Lover;
                     snitch = role == RoleEnum.Snitch;
 
-                    foreach (var exeRole in BaseRole.AllRoles.Where(x => x.RoleType == RoleEnum.Executioner))
+                    foreach (var exeRole in RoleService.Instance.GetRoles().GetRoles<Executioner>())
                     {
-                        var executioner = (Executioner) exeRole;
+                        var executioner = (Executioner)exeRole;
                         var target = executioner.target;
                         if (other == target)
                         {
@@ -184,14 +181,13 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                         role == RoleEnum.Crewmate && CustomGameOptions.WhoShifts == ShiftEnum.RegularCrewmates)
                     {
                         resetShifter = true;
-                        shifterRole.Player = other;
-                        BaseRole.RoleDictionary.Add(other.PlayerId, shifterRole);
+                        shifterRole.AssignPlayer(other);
+                        RoleService.Instance.GetRoles().AddRole(other.PlayerId, shifterRole);
                     }
                     else
                     {
                         new Crewmate(other);
                     }
-
 
                     break;
 
@@ -230,14 +226,14 @@ namespace TownOfUs.NeutralRoles.ShifterMod
 
                 if (lovers)
                 {
-                    var lover = BaseRole.GetRole<BaseLover>(shifter);
+                    var lover = RoleService.Instance.GetRoles().GetRole<BaseLover>();
                     var otherLover = lover.OtherLover;
                     otherLover.RegenTask();
                 }
 
                 if (snitch)
                 {
-                    var snitchRole = BaseRole.GetRole<Snitch>(shifter);
+                    var snitchRole = RoleService.Instance.GetRoles().GetRole<Snitch>();
                     snitchRole.ImpArrows.DestroyAll();
                     snitchRole.SnitchArrows.DestroyAll();
                     snitchRole.SnitchTargets.Clear();
@@ -256,7 +252,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
             if (shifter.AmOwner || other.AmOwner)
             {
                 if (shifter.Is(RoleEnum.Arsonist) && other.AmOwner)
-                    BaseRole.GetRole<Arsonist>(shifter).IgniteButton.Destroy();
+                    RoleService.Instance.GetRoles().GetRole<Arsonist>().IgniteButton.Destroy();
                 DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
                 DestroyableSingleton<HudManager>.Instance.KillButton.isActive = false;
 

@@ -1,6 +1,7 @@
-using System;
 using HarmonyLib;
+using System;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using Object = UnityEngine.Object;
 
 namespace TownOfUs.ImpostorRoles.SwooperMod
@@ -13,7 +14,7 @@ namespace TownOfUs.ImpostorRoles.SwooperMod
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Swooper))
             {
-                var role = BaseRole.GetRole<Swooper>(PlayerControl.LocalPlayer);
+                var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Swooper>(PlayerControl.LocalPlayer);
                 role.LastSwooped = DateTime.UtcNow;
             }
         }

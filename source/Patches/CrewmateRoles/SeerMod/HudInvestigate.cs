@@ -1,11 +1,12 @@
-﻿using System.Linq;
-using HarmonyLib;
+﻿using HarmonyLib;
+using System.Linq;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.CrewmateRoles.SeerMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
-    public class HudInvestigate
+    public static class HudInvestigate
     {
         public static void Postfix(PlayerControl __instance)
         {
@@ -22,8 +23,7 @@ namespace TownOfUs.CrewmateRoles.SeerMod
             var isDead = data.IsDead;
             var investigateButton = DestroyableSingleton<HudManager>.Instance.KillButton;
 
-            var role = BaseRole.GetRole<Seer>(PlayerControl.LocalPlayer);
-
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Seer>(PlayerControl.LocalPlayer);
 
             if (isDead)
             {

@@ -1,6 +1,7 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.NeutralRoles.ExecutionerMod
 {
@@ -11,12 +12,11 @@ namespace TownOfUs.NeutralRoles.ExecutionerMod
         {
             if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask) return true;
 
-            foreach (var role in BaseRole.AllRoles)
-                if (role.RoleType == RoleEnum.Executioner)
-                    ((Executioner) role).Loses();
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Executioner>())
+                role.Loses();
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.ExecutionerLose,
+                (byte)CustomRPC.ExecutionerLose,
                 SendOption.Reliable, -1);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 

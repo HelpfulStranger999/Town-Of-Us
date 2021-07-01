@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.NeutralRoles.PhantomMod
@@ -12,7 +13,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
         {
             var num = float.MaxValue;
             var @object = pc.Object;
-            couldUse = (!pc.IsDead || @object.Is(RoleEnum.Phantom) && !BaseRole.GetRole<Phantom>(@object).Caught)
+            couldUse = (!pc.IsDead || @object.Is(RoleEnum.Phantom) && !RoleService.Instance.GetRoles().GetRoleOfPlayer<Phantom>(@object).Caught)
                        && @object.CanMove;
             canUse = couldUse;
             if (canUse)
@@ -35,8 +36,8 @@ namespace TownOfUs.NeutralRoles.PhantomMod
         public static bool Prefix(Ladder __instance)
         {
             var data = PlayerControl.LocalPlayer.Data;
-            __instance.CanUse(data, out var flag, out var flag2);
-            if (flag) PlayerControl.LocalPlayer.MyPhysics.RpcClimbLadder(__instance);
+            __instance.CanUse(data, out var canUse, out _);
+            if (canUse) PlayerControl.LocalPlayer.MyPhysics.RpcClimbLadder(__instance);
 
             return false;
         }

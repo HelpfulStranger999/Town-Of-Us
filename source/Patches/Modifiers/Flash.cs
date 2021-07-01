@@ -1,9 +1,10 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.Modifiers
 {
-    public class Flash
+    public static class Flash
     {
         public static bool shouldSpeedUp(PlayerControl player)
         {
@@ -11,13 +12,13 @@ namespace TownOfUs.Modifiers
             {
                 if (player.Is(RoleEnum.Morphling))
                 {
-                    var morphling = BaseRole.GetRole<Morphling>(player);
+                    var morphling = RoleService.Instance.GetRoles().GetRoleOfPlayer<Morphling>(player);
                     return morphling.MorphedPlayer != null && morphling.MorphedPlayer.Is(ModifierEnum.Flash);
                 }
 
                 if (player.Is(RoleEnum.Glitch))
                 {
-                    var glitch = BaseRole.GetRole<Glitch>(player);
+                    var glitch = RoleService.Instance.GetRoles().GetRoleOfPlayer<Glitch>(player);
                     return glitch.MimicTarget != null && glitch.MimicTarget.Is(ModifierEnum.Flash);
                 }
 
@@ -26,13 +27,13 @@ namespace TownOfUs.Modifiers
 
             if (player.Is(RoleEnum.Morphling))
             {
-                var morphling = BaseRole.GetRole<Morphling>(player);
+                var morphling = RoleService.Instance.GetRoles().GetRoleOfPlayer<Morphling>(player);
                 return morphling.MorphedPlayer == null;
             }
 
             if (player.Is(RoleEnum.Glitch))
             {
-                var glitch = BaseRole.GetRole<Glitch>(player);
+                var glitch = RoleService.Instance.GetRoles().GetRoleOfPlayer<Glitch>(player);
                 return glitch.MimicTarget == null;
             }
 

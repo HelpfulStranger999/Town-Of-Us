@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.NeutralRoles.GlitchMod
 {
@@ -10,7 +11,7 @@ namespace TownOfUs.NeutralRoles.GlitchMod
         {
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Glitch) && __instance.isActiveAndEnabled &&
                 !__instance.isCoolingDown)
-                return BaseRole.GetRole<Glitch>(PlayerControl.LocalPlayer).UseAbility(__instance);
+                return RoleService.Instance.GetRoles().GetRoleOfPlayer<Glitch>(PlayerControl.LocalPlayer).UseAbility(__instance);
 
             return true;
         }

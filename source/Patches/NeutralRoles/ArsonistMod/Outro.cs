@@ -1,6 +1,7 @@
-using System.Linq;
 using HarmonyLib;
+using System.Linq;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.NeutralRoles.ArsonistMod
@@ -10,10 +11,9 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = BaseRole.AllRoles.FirstOrDefault(x =>
-                x.RoleType == RoleEnum.Arsonist && ((Arsonist) x).ArsonistWins);
+            var role = RoleService.Instance.GetRoles().GetRoles<Arsonist>().FirstOrDefault(x => x.ArsonistWins);
             if (role == null) return;
-            if (BaseRole.GetRoles(RoleEnum.Jester).Any(x => ((Jester) x).VotedOut)) return;
+            if (RoleService.Instance.GetRoles().GetRoles<Jester>().Any(x => x.VotedOut)) return;
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
             array[0].NameText.text = role.ColorString + array[0].NameText.text + "</color>";
             __instance.BackgroundBar.material.color = role.Color;

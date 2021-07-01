@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.SwooperMod
@@ -15,7 +16,7 @@ namespace TownOfUs.ImpostorRoles.SwooperMod
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Swooper)) return;
-            var role = BaseRole.GetRole<Swooper>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Swooper>(PlayerControl.LocalPlayer);
             if (role.SwoopButton == null)
             {
                 role.SwoopButton = Object.Instantiate(__instance.KillButton, HudManager.Instance.transform);
@@ -35,7 +36,6 @@ namespace TownOfUs.ImpostorRoles.SwooperMod
             }
 
             role.SwoopButton.SetCoolDown(role.SwoopTimer(), CustomGameOptions.MineCd);
-
 
             role.SwoopButton.renderer.color = Palette.EnabledColor;
             role.SwoopButton.renderer.material.SetFloat("_Desat", 0f);

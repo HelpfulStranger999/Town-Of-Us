@@ -1,10 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
 using HarmonyLib;
 using Hazel;
+using System.Collections.Generic;
+using System.Linq;
 using TownOfUs.CrewmateRoles.MayorMod;
 using TownOfUs.Extensions;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnhollowerBaseLib;
 using UnityEngine;
 using UnityEngine.UI;
@@ -41,7 +42,7 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
             public static bool Prefix(MeetingHud __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Swapper)) return true;
-                var swapper = BaseRole.GetRole<Swapper>(PlayerControl.LocalPlayer);
+                var swapper = RoleService.Instance.GetRoles().GetRoleOfPlayer<Swapper>(PlayerControl.LocalPlayer);
                 foreach (var button in swapper.Buttons.Where(button => button != null))
                 {
                     if (button.GetComponent<SpriteRenderer>().sprite == AddButton.DisabledSprite)
@@ -69,11 +70,10 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
                     }
                 }
 
-
                 if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null) return true;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.SetSwaps, SendOption.Reliable, -1);
+                    (byte)CustomRPC.SetSwaps, SendOption.Reliable, -1);
                 writer.Write(SwapVotes.Swap1.TargetPlayerId);
                 writer.Write(SwapVotes.Swap2.TargetPlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -107,13 +107,13 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
                     }
 
                     __instance.RpcVotingComplete(array, exiled, tie);
-                    
-                    foreach (var role in BaseRole.GetRoles(RoleEnum.Mayor))
+
+                    foreach (var role in RoleService.Instance.GetRoles().GetRoles<Mayor>())
                     {
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                            (byte) CustomRPC.SetExtraVotes, SendOption.Reliable, -1);
+                            (byte)CustomRPC.SetExtraVotes, SendOption.Reliable, -1);
                         writer.Write(role.Player.PlayerId);
-                        writer.WriteBytesAndSize(((Mayor) role).ExtraVotes.ToArray());
+                        writer.WriteBytesAndSize(((Mayor)role).ExtraVotes.ToArray());
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
                 }

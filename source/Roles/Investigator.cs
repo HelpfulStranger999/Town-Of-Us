@@ -1,3 +1,4 @@
+using Hazel;
 using System.Collections.Generic;
 using TownOfUs.CrewmateRoles.InvestigatorMod;
 using UnityEngine;
@@ -17,6 +18,14 @@ namespace TownOfUs.Roles
             Color = new Color(0f, 0.7f, 0.7f, 1f);
             RoleType = RoleEnum.Investigator;
             Scale = 1.4f;
+        }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetInvestigator, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 }

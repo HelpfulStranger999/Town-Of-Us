@@ -1,6 +1,7 @@
-using System.Linq;
 using HarmonyLib;
+using System.Linq;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.EngineerMod
@@ -9,7 +10,6 @@ namespace TownOfUs.CrewmateRoles.EngineerMod
     public class KillButtonSprite
     {
         private static Sprite Sprite => TownOfUs.EngineerFix;
-
 
         [HarmonyPatch(nameof(HudManager.Update))]
         public static void Postfix(HudManager __instance)
@@ -20,7 +20,7 @@ namespace TownOfUs.CrewmateRoles.EngineerMod
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Engineer)) return;
             if (__instance.KillButton == null) return;
 
-            var role = BaseRole.GetRole<Engineer>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Engineer>(PlayerControl.LocalPlayer);
 
             __instance.KillButton.renderer.sprite = Sprite;
             __instance.KillButton.SetCoolDown(0f, 10f);

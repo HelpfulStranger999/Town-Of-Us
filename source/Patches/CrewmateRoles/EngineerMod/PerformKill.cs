@@ -1,7 +1,8 @@
-using System.Linq;
 using HarmonyLib;
 using Hazel;
+using System.Linq;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.CrewmateRoles.EngineerMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUs.CrewmateRoles.EngineerMod
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             if (!__instance.enabled) return false;
-            var role = BaseRole.GetRole<Engineer>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Engineer>(PlayerControl.LocalPlayer);
             if (role.UsedThisRound) return false;
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var specials = system.specials.ToArray();
@@ -69,7 +70,7 @@ namespace TownOfUs.CrewmateRoles.EngineerMod
             }
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.EngineerFix, SendOption.Reliable, -1);
+                (byte)CustomRPC.EngineerFix, SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.NetId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
@@ -111,7 +112,7 @@ namespace TownOfUs.CrewmateRoles.EngineerMod
         private static bool FixLights(SwitchSystem lights)
         {
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.FixLights, SendOption.Reliable, -1);
+                (byte)CustomRPC.FixLights, SendOption.Reliable, -1);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             lights.ActualSwitches = lights.ExpectedSwitches;

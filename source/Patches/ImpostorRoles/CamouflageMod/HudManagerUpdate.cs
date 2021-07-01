@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.CamouflageMod
@@ -15,7 +16,7 @@ namespace TownOfUs.ImpostorRoles.CamouflageMod
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Camouflager)) return;
-            var role = BaseRole.GetRole<Camouflager>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Camouflager>(PlayerControl.LocalPlayer);
             if (role.CamouflageButton == null)
             {
                 role.CamouflageButton = Object.Instantiate(__instance.KillButton, HudManager.Instance.transform);

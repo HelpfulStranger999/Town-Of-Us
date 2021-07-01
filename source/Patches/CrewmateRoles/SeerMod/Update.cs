@@ -1,7 +1,8 @@
-using System.Linq;
 using HarmonyLib;
+using System.Linq;
 using TownOfUs.ImpostorRoles.CamouflageMod;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.SeerMod
@@ -23,9 +24,9 @@ namespace TownOfUs.CrewmateRoles.SeerMod
 
         private static void UpdateMeeting(MeetingHud __instance)
         {
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Seer))
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Seer>())
             {
-                var seerRole = (Seer) role;
+                var seerRole = (Seer)role;
                 if (!seerRole.Investigated.Contains(PlayerControl.LocalPlayer.PlayerId)) continue;
                 if (!seerRole.CheckSeeReveal(PlayerControl.LocalPlayer)) continue;
                 var state = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == seerRole.Player.PlayerId);
@@ -59,7 +60,7 @@ namespace TownOfUs.CrewmateRoles.SeerMod
                                 CustomGameOptions.SeerInfo == SeerInfo.Role ? " (Imp)" : "", true);
                             break;
                         default:
-                            var role = BaseRole.GetRole(player);
+                            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer(player);
                             state.NameText.color = CustomGameOptions.SeerInfo == SeerInfo.Faction
                                 ? role.FactionColor
                                 : role.Color;
@@ -78,9 +79,9 @@ namespace TownOfUs.CrewmateRoles.SeerMod
             if (PlayerControl.AllPlayerControls.Count <= 1) return;
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Seer))
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Seer>())
             {
-                var seerRole = (Seer) role;
+                var seerRole = (Seer)role;
                 if (!seerRole.Investigated.Contains(PlayerControl.LocalPlayer.PlayerId)) continue;
                 if (!seerRole.CheckSeeReveal(PlayerControl.LocalPlayer)) continue;
 
@@ -90,9 +91,8 @@ namespace TownOfUs.CrewmateRoles.SeerMod
 
             if (MeetingHud.Instance != null) UpdateMeeting(MeetingHud.Instance);
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Seer)) return;
-            var seer = BaseRole.GetRole<Seer>(PlayerControl.LocalPlayer);
+            var seer = RoleService.Instance.GetRoles().GetRoleOfPlayer<Seer>(PlayerControl.LocalPlayer);
             if (MeetingHud.Instance != null) UpdateMeeting(MeetingHud.Instance, seer);
-
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
@@ -115,7 +115,7 @@ namespace TownOfUs.CrewmateRoles.SeerMod
                             CustomGameOptions.SeerInfo == SeerInfo.Role ? " (Imp)" : "");
                         break;
                     default:
-                        var role = BaseRole.GetRole(player);
+                        var role = RoleService.Instance.GetRoles().GetRoleOfPlayer(player);
                         player.nameText.color = CustomGameOptions.SeerInfo == SeerInfo.Faction
                             ? role.FactionColor
                             : role.Color;

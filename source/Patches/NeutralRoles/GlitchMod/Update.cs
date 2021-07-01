@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using HarmonyLib;
+﻿using HarmonyLib;
 using InnerNet;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.NeutralRoles.GlitchMod
 {
@@ -10,11 +10,11 @@ namespace TownOfUs.NeutralRoles.GlitchMod
     {
         private static void Postfix(HudManager __instance)
         {
-            var glitch = BaseRole.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch);
-            if (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started)
-                if (glitch != null)
-                    if (PlayerControl.LocalPlayer.Is(RoleEnum.Glitch))
-                        BaseRole.GetRole<Glitch>(PlayerControl.LocalPlayer).Update(__instance);
+            if (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started &&
+                RoleService.Instance.GetRoles().TryGetRoleOfPlayer<Glitch>(PlayerControl.LocalPlayer, out var glitch))
+            {
+                glitch.Update(__instance);
+            }
         }
     }
 }

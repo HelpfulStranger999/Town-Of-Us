@@ -1,6 +1,7 @@
 using System.Linq;
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.InvestigatorMod
@@ -25,7 +26,7 @@ namespace TownOfUs.CrewmateRoles.InvestigatorMod
         {
             if (!GameStarted || !PlayerControl.LocalPlayer.Is(RoleEnum.Investigator)) return;
             // New Footprint
-            var investigator = BaseRole.GetRole<Investigator>(PlayerControl.LocalPlayer);
+            var investigator = RoleService.Instance.GetRoles().GetRoleOfPlayer<Investigator>(PlayerControl.LocalPlayer);
             _time += Time.deltaTime;
             if (_time >= Interval)
             {

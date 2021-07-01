@@ -1,3 +1,4 @@
+using Hazel;
 using UnityEngine;
 
 namespace TownOfUs.Roles
@@ -14,5 +15,13 @@ namespace TownOfUs.Roles
         }
 
         public bool UsedThisRound { get; set; } = false;
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetEngineer, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
     }
 }

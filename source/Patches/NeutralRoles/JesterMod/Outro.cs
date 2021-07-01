@@ -1,6 +1,7 @@
 using System.Linq;
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.NeutralRoles.JesterMod
@@ -10,7 +11,7 @@ namespace TownOfUs.NeutralRoles.JesterMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = BaseRole.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Jester && ((Jester) x).VotedOut);
+            var role = RoleService.Instance.GetRoles().GetRoles<Jester>().FirstOrDefault(x => x .VotedOut);
             if (role == null) return;
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
             array[0].NameText.text = role.ColorString + array[0].NameText.text + "</color>";

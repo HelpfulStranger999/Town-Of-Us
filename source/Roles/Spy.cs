@@ -1,3 +1,4 @@
+using Hazel;
 using UnityEngine;
 
 namespace TownOfUs.Roles
@@ -11,6 +12,14 @@ namespace TownOfUs.Roles
             TaskText = () => "Spy on people and find the Impostors";
             Color = new Color(0.8f, 0.64f, 0.8f, 1f);
             RoleType = RoleEnum.Spy;
+        }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetSpy, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 }

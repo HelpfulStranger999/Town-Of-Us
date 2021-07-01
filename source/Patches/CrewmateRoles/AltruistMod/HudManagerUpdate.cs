@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.AltruistMod
@@ -14,7 +15,7 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Altruist)) return;
 
-            var role = BaseRole.GetRole<Altruist>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Altruist>(PlayerControl.LocalPlayer);
 
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;

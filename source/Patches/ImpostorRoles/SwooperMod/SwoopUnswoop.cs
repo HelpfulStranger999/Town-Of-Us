@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.ImpostorRoles.SwooperMod
 {
@@ -10,9 +11,9 @@ namespace TownOfUs.ImpostorRoles.SwooperMod
         [HarmonyPriority(Priority.Last)]
         public static void Postfix(HudManager __instance)
         {
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Swooper))
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Swooper>())
             {
-                var swooper = (Swooper) role;
+                var swooper = (Swooper)role;
                 if (swooper.IsSwooped)
                     swooper.Swoop();
                 else if (swooper.Enabled) swooper.UnSwoop();

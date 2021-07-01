@@ -1,10 +1,11 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.CrewmateRoles.MayorMod
 {
     [HarmonyPatch(typeof(PlayerVoteArea))]
-    public class AllowExtraVotes
+    public static class AllowExtraVotes
     {
         [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.Select))]
         public static class Select
@@ -12,7 +13,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
             public static bool Prefix(PlayerVoteArea __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return true;
-                var role = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Mayor>(PlayerControl.LocalPlayer);
                 if (PlayerControl.LocalPlayer.Data.IsDead) return false;
                 if (__instance.AmDead) return false;
                 if (!role.CanVote || !__instance.Parent.Select(__instance.TargetPlayerId)) return false;
@@ -27,7 +28,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
             public static bool Prefix(PlayerVoteArea __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return true;
-                var role = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Mayor>(PlayerControl.LocalPlayer);
                 if (__instance.Parent.state == MeetingHud.VoteStates.Proceeding ||
                     __instance.Parent.state == MeetingHud.VoteStates.Results)
                     return false;

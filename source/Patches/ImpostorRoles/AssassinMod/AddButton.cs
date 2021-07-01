@@ -1,7 +1,8 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
+using System;
 using TownOfUs.Extensions;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -9,13 +10,14 @@ using Object = UnityEngine.Object;
 namespace TownOfUs.ImpostorRoles.AssassinMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class AddButton
+    public static class AddButton
     {
         private static Sprite CycleSprite => TownOfUs.CycleSprite;
 
         private static Sprite GuessSprite => TownOfUs.GuessSprite;
 
-        private static bool IsExempt(PlayerVoteArea voteArea) {
+        private static bool IsExempt(PlayerVoteArea voteArea)
+        {
             if (voteArea.AmDead) return true;
             var player = Utils.PlayerById(voteArea.TargetPlayerId);
             if (
@@ -24,10 +26,9 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 player.Data.IsDead ||
                 player.Data.Disconnected
             ) return true;
-            var role = BaseRole.GetRole(player);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer(player);
             return role != null && role.Criteria();
         }
-
 
         public static void GenButton(Assassin role, PlayerVoteArea voteArea)
         {
@@ -56,7 +57,6 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             cycleCollider.offset = Vector2.zero;
             cycle.transform.GetChild(0).gameObject.Destroy();
 
-
             var guess = Object.Instantiate(confirmButton, voteArea.transform);
             var guessRenderer = guess.GetComponent<SpriteRenderer>();
             guessRenderer.sprite = GuessSprite;
@@ -73,7 +73,6 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             guessCollider.size = guessRenderer.sprite.bounds.size;
             guessCollider.offset = Vector2.zero;
             guess.transform.GetChild(0).gameObject.Destroy();
-
 
             role.Guesses.Add(targetId, "None");
             role.Buttons[targetId] = (cycle, guess);
@@ -109,7 +108,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 var currentGuess = role.Guesses[targetId];
                 if (currentGuess == "None") return;
 
-                var playerRole = BaseRole.GetRole(voteArea);
+                var playerRole = RoleService.Instance.GetRoles().GetRoleOfPlayer(voteArea.TargetPlayerId);
 
                 var toDie = playerRole.Name == currentGuess ? playerRole.Player : role.Player;
 
@@ -128,9 +127,8 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
 
         public static void Postfix(MeetingHud __instance)
         {
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Assassin))
+            foreach (var assassin in RoleService.Instance.GetRoles().GetRoles<Assassin>())
             {
-                var assassin = (Assassin) role;
                 assassin.Guesses.Clear();
                 assassin.Buttons.Clear();
                 assassin.GuessedThisMeeting = false;
@@ -139,7 +137,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             if (PlayerControl.LocalPlayer.Data.IsDead) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Assassin)) return;
 
-            var assassinRole = BaseRole.GetRole<Assassin>(PlayerControl.LocalPlayer);
+            var assassinRole = RoleService.Instance.GetRoles().GetRoleOfPlayer<Assassin>(PlayerControl.LocalPlayer);
             if (assassinRole.RemainingKills <= 0) return;
             foreach (var voteArea in __instance.playerStates)
             {

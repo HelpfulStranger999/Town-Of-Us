@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
-using HarmonyLib;
+﻿using HarmonyLib;
+using System;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using Object = UnityEngine.Object;
 
 namespace TownOfUs.NeutralRoles.GlitchMod
@@ -13,9 +13,8 @@ namespace TownOfUs.NeutralRoles.GlitchMod
         {
             if (ExileController.Instance != null && obj == ExileController.Instance.gameObject)
             {
-                var glitch = BaseRole.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch);
-                if (glitch != null)
-                    ((Glitch) glitch).LastKill = DateTime.UtcNow;
+                if (RoleService.Instance.GetRoles().TryGetRole<Glitch>(out var glitch))
+                    glitch.LastKill = DateTime.UtcNow;
             }
         }
     }

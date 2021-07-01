@@ -1,3 +1,5 @@
+using Hazel;
+
 namespace TownOfUs.Roles
 {
     public class Janitor : BaseRole
@@ -25,6 +27,14 @@ namespace TownOfUs.Roles
                 ExtraButtons.Clear();
                 ExtraButtons.Add(value);
             }
+        }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetJanitor, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 }

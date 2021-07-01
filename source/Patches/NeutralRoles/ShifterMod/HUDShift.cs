@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.NeutralRoles.ShifterMod
 {
@@ -22,8 +23,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
             var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
             var shiftButton = DestroyableSingleton<HudManager>.Instance.KillButton;
 
-            var role = BaseRole.GetRole<Shifter>(PlayerControl.LocalPlayer);
-
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Shifter>(PlayerControl.LocalPlayer);
 
             if (isDead)
             {

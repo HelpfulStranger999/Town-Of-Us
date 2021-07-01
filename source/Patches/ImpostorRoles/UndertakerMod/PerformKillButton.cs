@@ -1,8 +1,9 @@
-using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
+using System;
 using TownOfUs.Extensions;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.UndertakerMod
@@ -16,7 +17,7 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
             if (!flag) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
-            var role = BaseRole.GetRole<Undertaker>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Undertaker>(PlayerControl.LocalPlayer);
 
             if (__instance == role.DragDropButton)
             {
@@ -30,7 +31,7 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
                     var playerId = role.CurrentTarget.ParentId;
 
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte) CustomRPC.Drag, SendOption.Reliable, -1);
+                        (byte)CustomRPC.Drag, SendOption.Reliable, -1);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer.Write(playerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -45,7 +46,7 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
                 {
                     if (!__instance.enabled) return false;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte) CustomRPC.Drop, SendOption.Reliable, -1);
+                        (byte)CustomRPC.Drop, SendOption.Reliable, -1);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     var position = PlayerControl.LocalPlayer.transform.position;
                     writer.Write(position);
@@ -53,14 +54,12 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                     var body = role.CurrentlyDragging;
-                    var renderer = role.CurrentlyDragging.GetComponent<SpriteRenderer>();
+                    body.bodyRenderer.material.SetFloat("_Outline", 0f);
                     role.CurrentlyDragging = null;
-                    renderer.material.SetFloat("_Outline", 0f);
                     __instance.renderer.sprite = TownOfUs.DragSprite;
                     role.LastDragged = DateTime.UtcNow;
 
                     body.transform.position = position;
-
 
                     return false;
                 }

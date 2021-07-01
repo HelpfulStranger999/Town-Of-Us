@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.ImpostorRoles.MorphlingMod
 {
@@ -12,7 +13,7 @@ namespace TownOfUs.ImpostorRoles.MorphlingMod
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Morphling)) return;
-            var role = BaseRole.GetRole<Morphling>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Morphling>(PlayerControl.LocalPlayer);
             if (target != null && __instance == DestroyableSingleton<HudManager>.Instance.KillButton)
                 if (target.Data.IsImpostor)
                 {

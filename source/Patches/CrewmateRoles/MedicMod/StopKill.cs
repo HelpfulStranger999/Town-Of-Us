@@ -1,6 +1,7 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.MedicMod
@@ -25,11 +26,11 @@ namespace TownOfUs.CrewmateRoles.MedicMod
                 return;
 
             var player = Utils.PlayerById(playerId);
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Medic))
-                if (((Medic) role).ShieldedPlayer.PlayerId == playerId)
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Medic>())
+                if (((Medic)role).ShieldedPlayer.PlayerId == playerId)
                 {
-                    ((Medic) role).ShieldedPlayer = null;
-                    ((Medic) role).exShielded = player;
+                    ((Medic)role).ShieldedPlayer = null;
+                    ((Medic)role).exShielded = player;
                     System.Console.WriteLine(player.name + " Is Ex-Shielded");
                 }
 
@@ -50,7 +51,7 @@ namespace TownOfUs.CrewmateRoles.MedicMod
                 if (__instance.isActiveAndEnabled && !__instance.isCoolingDown)
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte) CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                        (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                     writer.Write(target.getMedic().Player.PlayerId);
                     writer.Write(target.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -62,10 +63,8 @@ namespace TownOfUs.CrewmateRoles.MedicMod
                     BreakShield(target.getMedic().Player.PlayerId, target.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
 
-
                 return false;
             }
-
 
             return true;
         }

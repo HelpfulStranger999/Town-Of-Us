@@ -1,6 +1,7 @@
-using System;
 using HarmonyLib;
+using System;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -11,9 +12,9 @@ namespace TownOfUs.ImpostorRoles.MinerMod
     {
         public static void Postfix(ShipStatus __instance)
         {
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Miner))
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Miner>())
             {
-                var miner = (Miner) role;
+                var miner = (Miner)role;
                 miner.LastMined = DateTime.UtcNow;
                 miner.LastMined = miner.LastMined.AddSeconds(-10f);
                 var vents = Object.FindObjectsOfType<Vent>();

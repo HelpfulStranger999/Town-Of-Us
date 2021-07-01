@@ -1,10 +1,11 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.MayorMod
 {
-    public class AddAbstain
+    public static class AddAbstain
     {
         private static Sprite Abstain => TownOfUs.Abstain;
 
@@ -17,9 +18,8 @@ namespace TownOfUs.CrewmateRoles.MayorMod
             role.Abstain.GetComponent<SpriteRenderer>().sprite = Abstain;
         }
 
-
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-        public class MeetingHudStart
+        private static class MeetingHudStart
         {
             public static void GenButton(Mayor role, MeetingHud __instance)
             {
@@ -36,41 +36,41 @@ namespace TownOfUs.CrewmateRoles.MayorMod
             public static void Postfix(MeetingHud __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
-                var mayorRole = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var mayorRole = RoleService.Instance.GetRoles().GetRoleOfPlayer<Mayor>(PlayerControl.LocalPlayer);
                 GenButton(mayorRole, __instance);
             }
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.ClearVote))]
-        public class MeetingHudClearVote
+        private static class MeetingHudClearVote
         {
             public static void Postfix(MeetingHud __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
-                var mayorRole = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var mayorRole = RoleService.Instance.GetRoles().GetRoleOfPlayer<Mayor>(PlayerControl.LocalPlayer);
                 UpdateButton(mayorRole, __instance);
             }
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
-        public class MeetingHudConfirm
+        private static class MeetingHudConfirm
         {
             public static void Postfix(MeetingHud __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
-                var mayorRole = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var mayorRole = RoleService.Instance.GetRoles().GetRoleOfPlayer<Mayor>(PlayerControl.LocalPlayer);
                 mayorRole.Abstain.ClearButtons();
                 UpdateButton(mayorRole, __instance);
             }
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Select))]
-        public class MeetingHudSelect
+        private static class MeetingHudSelect
         {
             public static void Postfix(MeetingHud __instance, int __0)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
-                var mayorRole = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var mayorRole = RoleService.Instance.GetRoles().GetRoleOfPlayer<Mayor>(PlayerControl.LocalPlayer);
                 if (__0 != 251) mayorRole.Abstain.ClearButtons();
 
                 UpdateButton(mayorRole, __instance);
@@ -78,23 +78,23 @@ namespace TownOfUs.CrewmateRoles.MayorMod
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
-        public class MeetingHudVotingComplete
+        private static class MeetingHudVotingComplete
         {
             public static void Postfix(MeetingHud __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
-                var mayorRole = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var mayorRole = RoleService.Instance.GetRoles().GetRoleOfPlayer<Mayor>(PlayerControl.LocalPlayer);
                 UpdateButton(mayorRole, __instance);
             }
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
-        public class MeetingHudUpdate
+        private static class MeetingHudUpdate
         {
             public static void Postfix(MeetingHud __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
-                var mayorRole = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var mayorRole = RoleService.Instance.GetRoles().GetRoleOfPlayer<Mayor>(PlayerControl.LocalPlayer);
                 switch (__instance.state)
                 {
                     case MeetingHud.VoteStates.Discussion:
@@ -103,7 +103,6 @@ namespace TownOfUs.CrewmateRoles.MayorMod
                             mayorRole.Abstain.SetDisabled();
                             break;
                         }
-
 
                         mayorRole.Abstain.SetEnabled();
                         break;

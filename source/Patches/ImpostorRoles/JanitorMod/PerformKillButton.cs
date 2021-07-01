@@ -1,6 +1,7 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.JanitorMod
@@ -15,7 +16,7 @@ namespace TownOfUs.ImpostorRoles.JanitorMod
             if (!flag) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
-            var role = BaseRole.GetRole<Janitor>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Janitor>(PlayerControl.LocalPlayer);
 
             if (__instance == role.CleanButton)
             {
@@ -28,7 +29,7 @@ namespace TownOfUs.ImpostorRoles.JanitorMod
                 var playerId = role.CurrentTarget.ParentId;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.JanitorClean, SendOption.Reliable, -1);
+                    (byte)CustomRPC.JanitorClean, SendOption.Reliable, -1);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write(playerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

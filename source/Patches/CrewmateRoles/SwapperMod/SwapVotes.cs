@@ -1,7 +1,8 @@
+using HarmonyLib;
 using System.Collections;
 using System.Linq;
-using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.SwapperMod
@@ -42,26 +43,25 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
 
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Swapper))
                 {
-                    var swapper = BaseRole.GetRole<Swapper>(PlayerControl.LocalPlayer);
+                    var swapper = RoleService.Instance.GetRoles().GetRoleOfPlayer<Swapper>(PlayerControl.LocalPlayer);
                     foreach (var button in swapper.Buttons.Where(button => button != null)) button.SetActive(false);
                 }
 
                 var pool1 = Swap1.PlayerIcon.transform;
                 var name1 = Swap1.NameText.transform;
                 var mask1 = Swap1.transform.FindChild("MaskArea");
-                var pooldest1 = (Vector2) pool1.position;
-                var namedest1 = (Vector2) name1.position;
-                var maskdest1 = (Vector2) mask1.position;
+                var pooldest1 = (Vector2)pool1.position;
+                var namedest1 = (Vector2)name1.position;
+                var maskdest1 = (Vector2)mask1.position;
                 mask1.gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0f);
                 //
                 var pool2 = Swap2.PlayerIcon.transform;
                 var name2 = Swap2.NameText.transform;
                 var mask2 = Swap2.transform.FindChild("MaskArea");
-                var pooldest2 = (Vector2) pool2.position;
-                var namedest2 = (Vector2) name2.position;
-                var maskdest2 = (Vector2) mask2.position;
+                var pooldest2 = (Vector2)pool2.position;
+                var namedest2 = (Vector2)name2.position;
+                var maskdest2 = (Vector2)mask2.position;
                 mask2.gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0f);
-
 
                 Coroutines.Start(Slide2D(pool1, pooldest1, pooldest2, 2f));
                 Coroutines.Start(Slide2D(pool2, pooldest2, pooldest1, 2f));

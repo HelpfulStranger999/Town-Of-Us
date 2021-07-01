@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.UndertakerMod
@@ -14,7 +15,7 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Undertaker)) return;
 
-            var role = BaseRole.GetRole<Undertaker>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Undertaker>(PlayerControl.LocalPlayer);
             if (role.DragDropButton == null)
             {
                 role.DragDropButton = Object.Instantiate(__instance.KillButton, HudManager.Instance.transform);
@@ -34,7 +35,6 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
             role.DragDropButton.transform.localPosition = new Vector3(position.x,
                 __instance.ReportButton.transform.localPosition.y, position.z);
 
-
             if (role.DragDropButton.renderer.sprite == TownOfUs.DragSprite)
             {
                 var data = PlayerControl.LocalPlayer.Data;
@@ -45,7 +45,7 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
                            (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) &&
                            PlayerControl.LocalPlayer.CanMove;
                 var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance,
-                    LayerMask.GetMask(new[] {"Players", "Ghost"}));
+                    LayerMask.GetMask(new[] { "Players", "Ghost" }));
                 var killButton = role.DragDropButton;
                 DeadBody closestBody = null;
                 var closestDistance = float.MaxValue;
@@ -62,7 +62,6 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
                     closestBody = component;
                     closestDistance = distance;
                 }
-
 
                 KillButtonTarget.SetTarget(killButton, closestBody, role);
             }

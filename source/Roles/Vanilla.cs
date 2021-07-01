@@ -1,3 +1,4 @@
+using Hazel;
 using UnityEngine;
 
 namespace TownOfUs.Roles
@@ -12,6 +13,14 @@ namespace TownOfUs.Roles
             RoleType = RoleEnum.Impostor;
             Color = Palette.ImpostorRed;
         }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetImpostor, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
     }
 
     public class Crewmate : BaseRole
@@ -23,6 +32,14 @@ namespace TownOfUs.Roles
             Faction = Faction.Crewmates;
             RoleType = RoleEnum.Crewmate;
             Color = Color.white;
+        }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetCrewmate, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 }

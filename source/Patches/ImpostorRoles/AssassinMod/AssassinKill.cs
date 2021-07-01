@@ -4,10 +4,11 @@ using TownOfUs.Roles;
 using UnityEngine;
 using UnityEngine.UI;
 using TownOfUs.CrewmateRoles.MedicMod;
+using TownOfUs.Services;
 
 namespace TownOfUs.ImpostorRoles.AssassinMod
 {
-    public class AssassinKill
+    public static class AssassinKill
     {
         public static void RpcMurderPlayer(PlayerControl player)
         {
@@ -78,7 +79,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
 
                 if (player.Is(RoleEnum.Swapper))
                 {
-                    var buttons = BaseRole.GetRole<Swapper>(player).Buttons;
+                    var buttons = RoleService.Instance.GetRoles().GetRoleOfPlayer<Swapper>(player).Buttons;
                     foreach (var button in buttons)
                     {
                         button.SetActive(false);
@@ -88,7 +89,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             }
             player.Die(DeathReason.Kill);
             if (checkLover && player.isLover() && CustomGameOptions.BothLoversDie)
-                MurderPlayer(BaseRole.GetRole<BaseLover>(player).OtherLover.Player, false);
+                MurderPlayer(RoleService.Instance.GetRoles().GetRoleOfPlayer<BaseLover>(player).OtherLover.Player, false);
 
             var meetingHud = MeetingHud.Instance;
             if (amOwner)

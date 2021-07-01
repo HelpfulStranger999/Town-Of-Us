@@ -1,17 +1,24 @@
-﻿using System.Linq;
-using HarmonyLib;
+﻿using HarmonyLib;
+using System.Linq;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.NeutralRoles.ArsonistMod
 {
-    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    [HarmonyPatch]
     public class HudManagerUpdate
     {
         public static Sprite IgniteSprite => TownOfUs.IgniteSprite;
 
-        public static void UpdateMeeting(MeetingHud __instance, Arsonist role)
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
+        [HarmonyPostfix]
+        public static void UpdateMeeting(MeetingHud __instance)
         {
+            var localPlayer = PlayerControl.LocalPlayer;
+            if (!RoleService.Instance.GetRoles().TryGetRoleOfPlayer<Arsonist>(localPlayer, out var role))
+                return;
+
             foreach (var state in __instance.playerStates)
             {
                 var player = PlayerControl.AllPlayerControls.ToArray()
@@ -21,19 +28,20 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
             }
         }
 
+        [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
         public static void Postfix(HudManager __instance)
         {
             if (PlayerControl.AllPlayerControls.Count <= 1) return;
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist)) return;
-            var role = BaseRole.GetRole<Arsonist>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Arsonist>(PlayerControl.LocalPlayer);
 
-            if (MeetingHud.Instance != null) UpdateMeeting(MeetingHud.Instance, role);
             foreach (var playerId in role.DousedPlayers)
             {
                 var player = Utils.PlayerById(playerId);
-                if (player.Data.Disconnected || player.Data.IsDead)
+                var data = player?.Data;
+                if (data == null || data.Disconnected || data.IsDead)
                     continue;
 
                 player.myRend.material.SetColor("_VisorColor", role.Color);
@@ -61,7 +69,6 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
             ).ToList();
 
             Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton, float.NaN, notDoused);
-
 
             if (!role.IgniteButton.isCoolingDown & role.IgniteButton.isActiveAndEnabled & !role.IgniteUsed &
                 role.CheckEveryoneDoused())

@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.CrewmateRoles.MedicMod
 {
@@ -21,8 +22,7 @@ namespace TownOfUs.CrewmateRoles.MedicMod
             var isDead = data.IsDead;
             var protectButton = DestroyableSingleton<HudManager>.Instance.KillButton;
 
-            var role = BaseRole.GetRole<Medic>(PlayerControl.LocalPlayer);
-
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Medic>(PlayerControl.LocalPlayer);
 
             if (isDead)
             {

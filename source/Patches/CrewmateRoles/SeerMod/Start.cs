@@ -1,6 +1,7 @@
-using System;
 using HarmonyLib;
+using System;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.CrewmateRoles.SeerMod
 {
@@ -9,9 +10,9 @@ namespace TownOfUs.CrewmateRoles.SeerMod
     {
         public static void Postfix(ShipStatus __instance)
         {
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Seer))
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Seer>())
             {
-                var seer = (Seer) role;
+                var seer = (Seer)role;
                 seer.LastInvestigated = DateTime.UtcNow;
             }
         }

@@ -7,6 +7,7 @@ using InnerNet;
 using TownOfUs.Extensions;
 using TownOfUs.Roles;
 using TownOfUs.Roles.Modifiers;
+using TownOfUs.Services;
 using UnhollowerBaseLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -22,7 +23,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
             if (PlayerControl.LocalPlayer.Data.IsDead) return;
             if (__instance.TimerText.text.Contains("Can Vote")) return;
-            var role = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Mayor>(PlayerControl.LocalPlayer);
             __instance.TimerText.text = "Can Vote: " + role.VoteBank + " time(s) | " + __instance.TimerText.text;
         }
 
@@ -43,7 +44,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
                     dictionary[playerVoteArea.VotedFor] = 1;
             }
 
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Mayor))
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Mayor>())
             foreach (var number in ((Mayor) role).ExtraVotes)
                 if (dictionary.TryGetValue(number, out var num))
                     dictionary[number] = num + 1;
@@ -77,7 +78,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
         [HarmonyPatch(nameof(MeetingHud.Start))]
         public static void Prefix()
         {
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Mayor))
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Mayor>())
             {
                 var mayor = (Mayor) role;
                 mayor.ExtraVotes.Clear();
@@ -129,7 +130,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
             public static void Postfix(MeetingHud __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
-                var role = BaseRole.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Mayor>(PlayerControl.LocalPlayer);
                 if (role.CanVote) __instance.SkipVoteButton.gameObject.SetActive(true);
             }
         }
@@ -154,7 +155,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
                     SoundManager.Instance.PlaySound(__instance.VoteLockinSound, false, 1f);
                 }
                 
-                var role = BaseRole.GetRole<Mayor>(player);
+                var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Mayor>(player);
                 if (playerVoteArea.DidVote)
                 {
                     role.ExtraVotes.Add(suspectPlayerId);
@@ -234,7 +235,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
                     }
                 }
 
-                foreach (var role in BaseRole.GetRoles(RoleEnum.Mayor))
+                foreach (var role in RoleService.Instance.GetRoles().GetRoles<Mayor>())
                 {
                     var mayor = (Mayor) role;
                     var playerInfo = GameData.Instance.GetPlayerById(role.Player.PlayerId);

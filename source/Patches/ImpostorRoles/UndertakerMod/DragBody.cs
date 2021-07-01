@@ -1,5 +1,6 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.UndertakerMod
@@ -10,24 +11,28 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
         public static void Postfix(PlayerControl __instance)
         {
             if (!__instance.Is(RoleEnum.Undertaker)) return;
-
-            var role = BaseRole.GetRole<Undertaker>(__instance);
-
-            if (role.CurrentlyDragging != null)
+            var role = RoleService.Instance.GetRoles().GetRole<Undertaker>();
+            var body = role.CurrentlyDragging;
+            if (body == null) return;
+            if (__instance.Data.IsDead)
             {
-                var velocity = __instance.gameObject.GetComponent<Rigidbody2D>().velocity.normalized;
-
-                role.CurrentlyDragging.transform.position = __instance.transform.position - (Vector3) velocity / 3;
-
-
-                if (__instance.AmOwner)
-                {
-                    var renderer = role.CurrentlyDragging.GetComponent<SpriteRenderer>();
-                    renderer.material.SetColor("_OutlineColor", Color.green);
-                    renderer.material.SetFloat("_Outline", 1f);
-                    if (__instance.CanMove) __instance.killTimer += Time.fixedDeltaTime;
-                }
+                role.CurrentlyDragging = null;
+                body.bodyRenderer.material.SetFloat("_Outline", 0f);
+                return;
             }
+            var currentPosition = __instance.GetTruePosition();
+            var velocity = __instance.gameObject.GetComponent<Rigidbody2D>().velocity.normalized;
+            var newPos = ((Vector2)__instance.transform.position) - (velocity / 3) + body.myCollider.offset;
+            if (!PhysicsHelpers.AnythingBetween(
+                currentPosition,
+                newPos,
+                Constants.ShipAndObjectsMask,
+                false
+            )) body.transform.position = newPos;
+            if (!__instance.AmOwner) return;
+            var material = body.bodyRenderer.material;
+            material.SetColor("_OutlineColor", Color.green);
+            material.SetFloat("_Outline", 1f);
         }
     }
 }

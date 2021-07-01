@@ -1,6 +1,7 @@
-using System.Linq;
 using HarmonyLib;
+using System.Linq;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.SnitchMod
@@ -17,7 +18,7 @@ namespace TownOfUs.CrewmateRoles.SnitchMod
             var taskinfos = __instance.Data.Tasks.ToArray();
 
             var tasksLeft = taskinfos.Count(x => !x.Complete);
-            var role = BaseRole.GetRole<Snitch>(__instance);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Snitch>(__instance);
             role.TasksLeft = tasksLeft;
             switch (tasksLeft)
             {

@@ -1,6 +1,7 @@
 using System.Linq;
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.NeutralRoles.PhantomMod
@@ -10,8 +11,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = BaseRole.AllRoles.FirstOrDefault(x =>
-                x.RoleType == RoleEnum.Phantom && ((Phantom) x).CompletedTasks);
+            var role = RoleService.Instance.GetRoles().GetRoles<Phantom>().FirstOrDefault(x => x.CompletedTasks);
             if (role == null) return;
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
             array[0].NameText.text = role.ColorString + array[0].NameText.text + "</color>";

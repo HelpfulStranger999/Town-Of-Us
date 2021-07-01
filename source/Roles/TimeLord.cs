@@ -1,3 +1,4 @@
+using Hazel;
 using System;
 using TownOfUs.CrewmateRoles.TimeLordMod;
 using UnityEngine;
@@ -23,7 +24,6 @@ namespace TownOfUs.Roles
         {
             var utcNow = DateTime.UtcNow;
 
-
             TimeSpan timespan;
             float num;
 
@@ -38,16 +38,22 @@ namespace TownOfUs.Roles
                 num = CustomGameOptions.RewindCooldown * 1000f;
             }
 
-
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             if (flag2) return 0;
-            return (num - (float) timespan.TotalMilliseconds) / 1000f;
+            return (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
-
 
         public float GetCooldown()
         {
             return RecordRewind.rewinding ? CustomGameOptions.RewindDuration : CustomGameOptions.SheriffKillCd;
+        }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetTimeLord, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 }

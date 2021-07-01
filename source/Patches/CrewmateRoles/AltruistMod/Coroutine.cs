@@ -2,15 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using InnerNet;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace TownOfUs.CrewmateRoles.AltruistMod
 {
-    public class Coroutine
+    public static class Coroutine
     {
         public static ArrowBehaviour Arrow;
         public static PlayerControl Target;
@@ -22,7 +22,6 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
             var position = target.TruePosition;
 
             var revived = new List<PlayerControl>();
-
 
             if (AmongUsClient.Instance.AmHost) Utils.RpcMurderPlayer(role.Player, role.Player);
 
@@ -61,7 +60,7 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
 
             if (player.isLover() && CustomGameOptions.BothLoversDie)
             {
-                var lover = BaseRole.GetRole<BaseLover>(player).OtherLover.Player;
+                var lover = RoleService.Instance.GetRoles().GetRoleOfPlayer<BaseLover>(player).OtherLover.Player;
 
                 lover.Revive();
                 Murder.KilledPlayers.Remove(
@@ -86,7 +85,6 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
                 catch
                 {
                 }
-
 
             if (PlayerControl.LocalPlayer.Data.IsImpostor || PlayerControl.LocalPlayer.Is(RoleEnum.Glitch))
             {

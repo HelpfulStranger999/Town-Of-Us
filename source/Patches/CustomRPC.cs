@@ -1,6 +1,6 @@
 namespace TownOfUs
 {
-    public enum CustomRPC
+    public enum CustomRPC : byte
     {
         SetJester = 43,
         SetCouple,
@@ -42,7 +42,6 @@ namespace TownOfUs
 
         SetCrewmate,
         SetImpostor,
-
 
         LoveWin,
         GlitchWin,
@@ -86,7 +85,6 @@ namespace TownOfUs
         SetHacked,
 
         ExecutionerToJester,
-
 
         Start,
         SyncCustomSettings,

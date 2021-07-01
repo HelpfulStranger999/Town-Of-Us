@@ -1,8 +1,9 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
+using System;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.CrewmateRoles.SheriffMod
 {
@@ -15,7 +16,7 @@ namespace TownOfUs.CrewmateRoles.SheriffMod
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton) return true;
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Sheriff);
             if (!flag) return true;
-            var role = BaseRole.GetRole<Sheriff>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Sheriff>(PlayerControl.LocalPlayer);
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             var flag2 = role.SheriffKillTimer() == 0f;
@@ -28,7 +29,7 @@ namespace TownOfUs.CrewmateRoles.SheriffMod
             {
                 var medic = role.ClosestPlayer.getMedic().Player.PlayerId;
                 var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                 writer1.Write(medic);
                 writer1.Write(role.ClosestPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer1);

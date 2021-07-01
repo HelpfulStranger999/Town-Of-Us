@@ -1,3 +1,4 @@
+using Hazel;
 using UnityEngine;
 
 namespace TownOfUs.Roles
@@ -18,5 +19,13 @@ namespace TownOfUs.Roles
         public bool UsedAbility { get; set; } = false;
         public PlayerControl ShieldedPlayer { get; set; }
         public PlayerControl exShielded { get; set; }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetMedic, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
     }
 }

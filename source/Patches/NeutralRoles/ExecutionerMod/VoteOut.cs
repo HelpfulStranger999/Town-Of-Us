@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.NeutralRoles.ExecutionerMod
 {
@@ -12,9 +13,9 @@ namespace TownOfUs.NeutralRoles.ExecutionerMod
             if (exiled == null) return;
             var player = exiled.Object;
 
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Executioner))
-                if (player.PlayerId == ((Executioner) role).target.PlayerId)
-                    ((Executioner) role).Wins();
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Executioner>())
+                if (player.PlayerId == ((Executioner)role).target.PlayerId)
+                    ((Executioner)role).Wins();
         }
     }
 }

@@ -1,10 +1,11 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.ImpostorRoles.CamouflageMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class CamouflageUnCamouflage
+    public static class CamouflageUnCamouflage
     {
         public static bool CommsEnabled;
         public static bool CamouflagerEnabled;
@@ -14,18 +15,17 @@ namespace TownOfUs.ImpostorRoles.CamouflageMod
         public static void Postfix(HudManager __instance)
         {
             CamouflagerEnabled = false;
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Camouflager))
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Camouflager>())
             {
-                var camouflager = (Camouflager) role;
-                if (camouflager.Camouflaged)
+                if (role.Camouflaged)
                 {
                     CamouflagerEnabled = true;
-                    camouflager.Camouflage();
+                    role.Camouflage();
                 }
-                else if (camouflager.Enabled)
+                else if (role.Enabled)
                 {
                     CamouflagerEnabled = false;
-                    camouflager.UnCamouflage();
+                    role.UnCamouflage();
                 }
             }
 

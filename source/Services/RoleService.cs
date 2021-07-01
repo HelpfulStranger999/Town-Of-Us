@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Hazel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using TownOfUs.NeutralRoles.PhantomMod;
 using TownOfUs.Roles;
 
 namespace TownOfUs.Services
@@ -22,50 +25,114 @@ namespace TownOfUs.Services
             Collection = new RoleCollection();
         }
 
-        public void AssignRoles(IEnumerable<GameData.PlayerInfo> players, IEnumerable<RoleAssignmentConfiguration> configurations)
+        public void AssignRoles(IEnumerable<PlayerControl> players, IEnumerable<RoleAssignmentConfiguration> configurations)
         {
             var totalPlayers = players.Shuffle().ToList();
 
             if (Config.LoversProbability <= RandomGenerator.NextDouble())
             {
-                for (int i = 0; i < 2; i++)
-                {
-                    var player = totalPlayers.SelectRandomElement();
-                    if (player.IsImpostor)
-                    {
-                        AssignRole(new RoleAssignmentConfiguration()
-                        {
-                            RoleType = typeof(LovingImpostor)
-                        })
-                    }
-                }
+                AssignLovers(totalPlayers);
             }
 
-            var nonImpostor = players.Where(player => !player.IsImpostor).Shuffle().ToList();
-            var impostors = players.Where(player => player.IsImpostor).Shuffle().ToList();
+            var nonimpostors = players.Where(player => !player.Data.IsImpostor).Shuffle().ToList();
+            var impostors = players.Where(player => player.Data.IsImpostor).Shuffle().ToList();
 
-            AssignRolesToCrewmates(nonImpostor,
+            AssignRolesToCrewmates(nonimpostors,
                 configurations.Where(config => config.Faction == Faction.Crewmates));
 
-            AssignRolesToCrewmates(nonImpostor,
+            AssignRolesToCrewmates(nonimpostors,
                 configurations.Where(config => config.Faction == Faction.Neutral), Config.MaxNeutralRoles);
 
             AssignRolesToCrewmates(impostors,
                 configurations.Where(config => config.Faction == Faction.Impostors), Config.MaxImpostorRoles);
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetPhantom, SendOption.Reliable, -1);
+
+            if (Config.PhantomProbability <= RandomGenerator.NextDouble())
+            {
+                var possiblePhantoms = nonimpostors;
+                if (!possiblePhantoms.Any())
+                {
+                    possiblePhantoms = Collection.GetRoles().Where(role => role.Faction == Faction.Crewmates)
+                        .Select(role => role.Player).ToList();
+                }
+
+                var phantom = possiblePhantoms.SelectRandomElement();
+                SetPhantom.WillBePhantom = PlayerControl.AllPlayerControls.ToArray().Single(player => player.Data.PlayerId == phantom.PlayerId);
+                writer.Write(phantom.PlayerId);
+            }
+            else
+            {
+                writer.Write(byte.MaxValue);
+            }
+
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+            foreach (var crewmate in nonimpostors)
+                AssignRole(typeof(Crewmate), crewmate);
+
+            foreach (var impostor in impostors)
+                AssignRole(typeof(Impostor), impostor);
         }
 
-        private void AssignRolesToCrewmates(List<GameData.PlayerInfo> players,
+        private void AssignLovers(List<PlayerControl> players)
+        {
+            var firstPlayer = players.SelectRandomElement();
+            players.Remove(firstPlayer);
+
+            PlayerControl secondPlayer = null;
+
+            if (AssignLover(firstPlayer))
+            {
+                SpinWait.SpinUntil(() =>
+                {
+                    secondPlayer = players.SelectRandomElement();
+                    return !secondPlayer.Data.IsImpostor;
+                });
+            }
+            else
+            {
+                secondPlayer = players.SelectRandomElement();
+            }
+
+            players.Remove(secondPlayer);
+            AssignLover(secondPlayer);
+
+            var firstLover = Collection.GetRoleOfPlayer<BaseLover>(firstPlayer.PlayerId);
+            var secondLover = Collection.GetRoleOfPlayer<BaseLover>(secondPlayer.Data.PlayerId);
+            firstLover.SetLover(secondLover);
+            secondLover.SetLover(firstLover);
+
+            firstLover.SendSetRpc();
+        }
+
+        private bool AssignLover(PlayerControl player)
+        {
+            if (player.Data.IsImpostor)
+            {
+                AssignRole(typeof(LovingImpostor), player);
+                return true;
+            }
+            else
+            {
+                AssignRole(typeof(Lover), player);
+                return false;
+            }
+        }
+
+        private void AssignRolesToCrewmates(List<PlayerControl> players,
             IEnumerable<RoleAssignmentConfiguration> configurations, int maxRoles = -1)
         {
             var orderedConfigs = configurations.OrderByDescending(config => config.Probability);
             var guaranteedConfigs = orderedConfigs.TakeWhile(config => config.Probability == 100.0f).ToList();
 
             var assignedRoles = 0;
-            var remainingPlayers = new Queue<GameData.PlayerInfo>(players.Shuffle());
 
             foreach (var config in guaranteedConfigs.Shuffle())
             {
-                AssignRole(config, remainingPlayers.Dequeue());
+                var role = AssignRole(config.RoleType, players[0]);
+                players.RemoveAt(0);
                 if (++assignedRoles >= maxRoles) return;
             }
 
@@ -78,15 +145,19 @@ namespace TownOfUs.Services
 
             foreach (var config in tickets.Shuffle())
             {
-                AssignRole(config, remainingPlayers.Dequeue());
+                var role = AssignRole(config.RoleType, players[0]);
+                players.RemoveAt(0);
                 if (++assignedRoles >= maxRoles) return;
             }
         }
 
-        public void AssignRole(RoleAssignmentConfiguration roleConfig, GameData.PlayerInfo player)
+        public BaseRole AssignRole(Type roleType, PlayerControl player)
         {
-            var role = Factory.CreateRole(roleConfig.RoleType, System.Array.Empty<object>());
-            Collection.AddRole(player.PlayerId, role);
+            var role = Factory.CreateRole(roleType, Array.Empty<object>());
+            Collection.AddRole(player.Data.PlayerId, role);
+            role.SendSetRpc();
+            role.AssignPlayer(player);
+            return role;
         }
 
         public void Reset()

@@ -1,6 +1,7 @@
-using System;
 using HarmonyLib;
+using System;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.ImpostorRoles.CamouflageMod
 {
@@ -9,9 +10,9 @@ namespace TownOfUs.ImpostorRoles.CamouflageMod
     {
         public static void Postfix(ShipStatus __instance)
         {
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Camouflager))
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Camouflager>())
             {
-                var seer = (Camouflager) role;
+                var seer = (Camouflager)role;
                 seer.LastCamouflaged = DateTime.UtcNow;
             }
         }

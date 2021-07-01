@@ -10,22 +10,33 @@ namespace TownOfUs.Roles
 {
     public abstract class BaseLover : BaseRole
     {
-        public BaseLover(PlayerControl player, int num, bool loverImpostor) : base(player)
+        protected BaseLover(PlayerControl player) : base(player)
         {
-            var imp = num == 2 && loverImpostor;
-            Name = imp ? "Loving Impostor" : "Lover";
             Color = new Color(1f, 0.4f, 0.8f, 1f);
             ImpostorText = () =>
                 "You are in " + ColorString + "Love</color> with " + ColorString + OtherLover.Player.name;
             TaskText = () => $"Stay alive with your love {OtherLover.Player.name} \n and win together";
-            RoleType = imp ? RoleEnum.LoverImpostor : RoleEnum.Lover;
-            Scale = imp ? 2.3f : 1f;
-            Faction = imp ? Faction.Impostors : Faction.Crewmates;
         }
 
-        public BaseLover OtherLover { get; set; }
+        public BaseLover OtherLover { get; private set; } = null;
         public bool LoveCoupleWins { get; set; }
         public bool HasLovingImpostor => Player.Data.IsImpostor || OtherLover.Player.Data.IsImpostor;
+
+        public void SetLover(BaseLover lover)
+        {
+            OtherLover = lover;
+        }
+
+        public override void SendSetRpc()
+        {
+            if (OtherLover == null) return;
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetCouple, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            writer.Write(OtherLover.Player.PlayerId);
+            writer.Write(HasLovingImpostor ? 0 : 1);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
 
         protected override void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
         {
@@ -73,17 +84,17 @@ namespace TownOfUs.Roles
             //System.Console.WriteLine("LOVER3");
             var b = Random.RandomRangeInt(0, 3);
 
-            if ((b == 0) & (impostors.Count < 1)) b = 1;
+            if ((b == 0) && (impostors.Count < 1)) b = 1;
 
-            if ((b != 0) & (crewmates.Count <= 1)) b = 0;
+            if ((b != 0) && (crewmates.Count <= 1)) b = 0;
 
             //System.Console.WriteLine("LOVER4");
-            var flag2 = b == 0;
+            var shouldSpawnLovingImpostor = b == 0;
             var num = Random.RandomRangeInt(0, crewmates.Count);
             var player1 = crewmates[num];
             crewmates.Remove(player1);
             PlayerControl player2;
-            if (flag2)
+            if (shouldSpawnLovingImpostor)
             {
                 var num2 = Random.RandomRangeInt(0, impostors.Count);
                 player2 = impostors[num2];
@@ -95,19 +106,6 @@ namespace TownOfUs.Roles
                 player2 = crewmates[num2];
                 crewmates.Remove(player2);
             }
-
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte)CustomRPC.SetCouple, SendOption.Reliable, -1);
-            writer.Write(player1.PlayerId);
-            writer.Write(player2.PlayerId);
-            writer.Write(b);
-            var lover1 = new BaseLover(player1, 1, b == 0);
-            var lover2 = new BaseLover(player2, 2, b == 0);
-
-            lover1.OtherLover = lover2;
-            lover2.OtherLover = lover1;
-
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
         internal override bool HasNotReachedEndCondition(ShipStatus __instance)
@@ -158,8 +156,6 @@ namespace TownOfUs.Roles
             var count = PlayerControl.AllPlayerControls.ToArray().Count(player => !player.Data.IsDead);
 
             return count <= 3 || (HasLovingImpostor && count <= 4);
-
-            return PlayerControl.AllPlayerControls.ToArray().Count(player => !player.Data.IsDead) <= 3;
         }
 
         public void Win()
@@ -190,12 +186,23 @@ namespace TownOfUs.Roles
 
     public class Lover : BaseLover
     {
-        public Lover(PlayerControl player)
+        public Lover(PlayerControl player) : base(player)
         {
+            Name = "Lover";
+            RoleType = RoleEnum.Lover;
+            Scale = 1f;
+            Faction = Faction.Crewmates;
         }
     }
 
     public class LovingImpostor : BaseLover
     {
+        public LovingImpostor(PlayerControl player) : base(player)
+        {
+            Name = "Loving Impostor";
+            RoleType = RoleEnum.LoverImpostor;
+            Scale = 2.3f;
+            Faction = Faction.Impostors;
+        }
     }
 }

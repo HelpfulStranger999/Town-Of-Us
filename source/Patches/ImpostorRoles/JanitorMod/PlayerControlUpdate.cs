@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.JanitorMod
@@ -14,7 +15,7 @@ namespace TownOfUs.ImpostorRoles.JanitorMod
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Janitor)) return;
 
-            var role = BaseRole.GetRole<Janitor>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Janitor>(PlayerControl.LocalPlayer);
             if (role.CleanButton == null)
             {
                 role.CleanButton = Object.Instantiate(__instance.KillButton, HudManager.Instance.transform);
@@ -28,7 +29,6 @@ namespace TownOfUs.ImpostorRoles.JanitorMod
 
             role.CleanButton.renderer.sprite = TownOfUs.JanitorClean;
 
-
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
             var truePosition = PlayerControl.LocalPlayer.GetTruePosition();
@@ -37,7 +37,7 @@ namespace TownOfUs.ImpostorRoles.JanitorMod
                        (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) &&
                        PlayerControl.LocalPlayer.CanMove;
             var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance,
-                LayerMask.GetMask(new[] {"Players", "Ghost"}));
+                LayerMask.GetMask(new[] { "Players", "Ghost" }));
             var killButton = role.CleanButton;
             DeadBody closestBody = null;
             var closestDistance = float.MaxValue;
@@ -54,7 +54,6 @@ namespace TownOfUs.ImpostorRoles.JanitorMod
                 closestBody = component;
                 closestDistance = distance;
             }
-
 
             KillButtonTarget.SetTarget(killButton, closestBody, role);
             role.CleanButton.SetCoolDown(PlayerControl.LocalPlayer.killTimer, PlayerControl.GameOptions.KillCooldown);

@@ -1,6 +1,7 @@
-using System;
 using HarmonyLib;
+using System;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using Object = UnityEngine.Object;
 
 namespace TownOfUs.ImpostorRoles.MinerMod
@@ -13,7 +14,7 @@ namespace TownOfUs.ImpostorRoles.MinerMod
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Miner))
             {
-                var role = BaseRole.GetRole<Miner>(PlayerControl.LocalPlayer);
+                var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Miner>(PlayerControl.LocalPlayer);
                 role.LastMined = DateTime.UtcNow;
             }
         }

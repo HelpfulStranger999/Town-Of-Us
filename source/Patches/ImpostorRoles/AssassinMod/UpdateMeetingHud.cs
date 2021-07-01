@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using TownOfUs.Extensions;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.AssassinMod
@@ -10,9 +11,9 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
     {
         private static void Postfix(MeetingHud __instance)
         {
-            var role = BaseRole.GetRole(PlayerControl.LocalPlayer);
-            if (role?.RoleType != RoleEnum.Assassin) return;
-            var assassin = (Assassin)role;
+            if (!RoleService.Instance.GetRoles().TryGetRoleOfPlayer<Assassin>(PlayerControl.LocalPlayer, out var assassin))
+                return;
+
             foreach (var voteArea in __instance.playerStates)
             {
                 var targetId = voteArea.TargetPlayerId;
@@ -22,6 +23,14 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                     assassin.GuessedThisMeeting ||
                     string.IsNullOrEmpty(currentGuess)
                 ) continue;
+
+                var playerData = Utils.PlayerById(targetId)?.Data;
+                if (playerData == null || playerData.Disconnected)
+                {
+                    assassin.Guesses.Remove(targetId);
+                    ShowHideButtons.HideSingle(assassin, targetId, false);
+                    continue;
+                }
 
                 var nameText = "\n" + (currentGuess == "None"
                     ? "Guess"

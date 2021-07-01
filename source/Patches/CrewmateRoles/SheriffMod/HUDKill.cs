@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.CrewmateRoles.SheriffMod
 {
@@ -24,7 +25,7 @@ namespace TownOfUs.CrewmateRoles.SheriffMod
             var flag8 = PlayerControl.LocalPlayer.Is(RoleEnum.Sheriff);
             if (flag8)
             {
-                var role = BaseRole.GetRole<Sheriff>(PlayerControl.LocalPlayer);
+                var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Sheriff>(PlayerControl.LocalPlayer);
                 var isDead = PlayerControl.LocalPlayer.Data.IsDead;
                 if (isDead)
                 {

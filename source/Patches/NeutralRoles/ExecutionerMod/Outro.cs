@@ -1,6 +1,7 @@
-using System.Linq;
 using HarmonyLib;
+using System.Linq;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.NeutralRoles.ExecutionerMod
@@ -10,8 +11,8 @@ namespace TownOfUs.NeutralRoles.ExecutionerMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = BaseRole.AllRoles.FirstOrDefault(x =>
-                x.RoleType == RoleEnum.Executioner && ((Executioner) x).TargetVotedOut);
+            var role = RoleService.Instance.GetRoles().GetRoles<Executioner>().FirstOrDefault(x =>
+                x.TargetVotedOut);
             if (role == null) return;
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
             array[0].NameText.text = role.ColorString + array[0].NameText.text + "</color>";

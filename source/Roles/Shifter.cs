@@ -1,3 +1,4 @@
+using Hazel;
 using System;
 using UnityEngine;
 
@@ -28,9 +29,17 @@ namespace TownOfUs.Roles
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastShifted;
             var num = CustomGameOptions.ShifterCd * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
             if (flag2) return 0;
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+        }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetShifter, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 }

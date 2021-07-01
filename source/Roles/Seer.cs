@@ -1,6 +1,8 @@
+using Hazel;
 using System;
 using System.Collections.Generic;
 using TownOfUs.CrewmateRoles.SeerMod;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.Roles
@@ -26,14 +28,14 @@ namespace TownOfUs.Roles
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastInvestigated;
             var num = CustomGameOptions.SeerCd * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
             if (flag2) return 0;
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
         public bool CheckSeeReveal(PlayerControl player)
         {
-            var role = GetRole(player);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer(player);
             switch (CustomGameOptions.SeeReveal)
             {
                 case SeeReveal.All:
@@ -47,6 +49,14 @@ namespace TownOfUs.Roles
             }
 
             return false;
+        }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetSeer, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 }

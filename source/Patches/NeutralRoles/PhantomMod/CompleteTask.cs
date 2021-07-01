@@ -1,17 +1,18 @@
-using System.Linq;
 using HarmonyLib;
 using Hazel;
+using System.Linq;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.NeutralRoles.PhantomMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CompleteTask))]
-    public class CompleteTask
+    public static class CompleteTask
     {
         public static void Postfix(PlayerControl __instance)
         {
             if (!__instance.Is(RoleEnum.Phantom)) return;
-            var role = BaseRole.GetRole<Phantom>(__instance);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Phantom>(__instance);
 
             var taskinfos = __instance.Data.Tasks.ToArray();
 
@@ -23,7 +24,7 @@ namespace TownOfUs.NeutralRoles.PhantomMod
                 if (AmongUsClient.Instance.AmHost)
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte) CustomRPC.PhantomWin, SendOption.Reliable, -1);
+                        (byte)CustomRPC.PhantomWin, SendOption.Reliable, -1);
                     writer.Write(role.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();

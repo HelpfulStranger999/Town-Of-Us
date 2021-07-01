@@ -1,9 +1,12 @@
+using Hazel;
 using System;
+using TownOfUs.Extensions;
+using TownOfUs.Roles.Modifiers;
 using UnityEngine;
 
 namespace TownOfUs.Roles
 {
-    public class Morphling : BaseRole
+    public class Morphling : BaseRole, IVisualAlteration
 
     {
         public KillButtonManager _morphButton;
@@ -37,7 +40,6 @@ namespace TownOfUs.Roles
 
         public bool Morphed => TimeRemaining > 0f;
 
-
         public void Morph()
         {
             TimeRemaining -= Time.deltaTime;
@@ -51,15 +53,37 @@ namespace TownOfUs.Roles
             LastMorphed = DateTime.UtcNow;
         }
 
-
         public float MorphTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastMorphed;
             var num = CustomGameOptions.MorphlingCd * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
             if (flag2) return 0;
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+        }
+
+        public bool TryGetModifiedAppearance(out VisualAppearance appearance)
+        {
+            if (Morphed)
+            {
+                appearance = MorphedPlayer.GetDefaultAppearance();
+                var modifier = Modifier.GetModifier(MorphedPlayer);
+                if (modifier is IVisualAlteration alteration)
+                    alteration.TryGetModifiedAppearance(out appearance);
+                return true;
+            }
+
+            appearance = Player.GetDefaultAppearance();
+            return false;
+        }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetMorphling, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 }

@@ -1,22 +1,22 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.NeutralRoles.ArsonistMod
 {
     [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.RpcEndGame))]
-    public class EndGame
+    public static class EndGame
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
             if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask) return true;
 
-            foreach (var role in BaseRole.AllRoles)
-                if (role.RoleType == RoleEnum.Arsonist)
-                    ((Arsonist) role).Loses();
+            foreach (var arsonist in RoleService.Instance.GetRoles().GetRoles<Arsonist>())
+                arsonist.Loses();
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.ArsonistLose,
+                (byte)CustomRPC.ArsonistLose,
                 SendOption.Reliable, -1);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 

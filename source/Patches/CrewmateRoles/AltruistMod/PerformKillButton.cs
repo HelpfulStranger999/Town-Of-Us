@@ -1,6 +1,7 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.AltruistMod
@@ -15,7 +16,7 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
             if (!flag) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
-            var role = BaseRole.GetRole<Altruist>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Altruist>(PlayerControl.LocalPlayer);
 
             var flag2 = __instance.isCoolingDown;
             if (flag2) return false;

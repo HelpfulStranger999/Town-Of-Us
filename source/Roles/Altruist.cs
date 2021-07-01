@@ -1,3 +1,4 @@
+using Hazel;
 using UnityEngine;
 
 namespace TownOfUs.Roles
@@ -16,6 +17,14 @@ namespace TownOfUs.Roles
             TaskText = () => "Revive a dead body at the cost of your own life.";
             Color = new Color(0.4f, 0f, 0f, 1f);
             RoleType = RoleEnum.Altruist;
+        }
+
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetAltruist, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 }

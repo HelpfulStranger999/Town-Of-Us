@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.MorphlingMod
@@ -17,7 +18,7 @@ namespace TownOfUs.ImpostorRoles.MorphlingMod
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Morphling)) return;
-            var role = BaseRole.GetRole<Morphling>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Morphling>(PlayerControl.LocalPlayer);
             if (role.MorphButton == null)
             {
                 role.MorphButton = Object.Instantiate(__instance.KillButton, HudManager.Instance.transform);

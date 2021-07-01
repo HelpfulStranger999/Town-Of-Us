@@ -1,6 +1,7 @@
-using System;
 using HarmonyLib;
+using System;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.NeutralRoles.ShifterMod
 {
@@ -9,9 +10,9 @@ namespace TownOfUs.NeutralRoles.ShifterMod
     {
         public static void Postfix(ShipStatus __instance)
         {
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Shifter))
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Shifter>())
             {
-                var shifter = (Shifter) role;
+                var shifter = (Shifter)role;
                 shifter.LastShifted = DateTime.UtcNow;
             }
         }

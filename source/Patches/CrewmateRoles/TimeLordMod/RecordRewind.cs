@@ -5,6 +5,7 @@ using HarmonyLib;
 using Hazel;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -146,7 +147,7 @@ namespace TownOfUs.CrewmateRoles.TimeLordMod
                 Rewind();
             else Record();
 
-            foreach (var role in BaseRole.GetRoles(RoleEnum.TimeLord))
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<TimeLord>())
             {
                 var TimeLord = (TimeLord) role;
                 if ((DateTime.UtcNow - TimeLord.StartRewind).TotalMilliseconds >

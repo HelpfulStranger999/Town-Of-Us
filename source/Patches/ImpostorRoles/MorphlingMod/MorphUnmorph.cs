@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.ImpostorRoles.MorphlingMod
 {
@@ -8,9 +9,9 @@ namespace TownOfUs.ImpostorRoles.MorphlingMod
     {
         public static void Postfix(HudManager __instance)
         {
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Morphling))
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Morphling>())
             {
-                var morphling = (Morphling) role;
+                var morphling = (Morphling)role;
                 if (morphling.Morphed)
                     morphling.Morph();
                 else if (morphling.MorphedPlayer) morphling.Unmorph();

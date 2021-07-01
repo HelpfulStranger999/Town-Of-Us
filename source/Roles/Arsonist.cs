@@ -25,6 +25,14 @@ namespace TownOfUs.Roles
             Faction = Faction.Neutral;
         }
 
+        public override void SendSetRpc()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetArsonist, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+
         public KillButtonManager IgniteButton
         {
             get => _igniteButton;

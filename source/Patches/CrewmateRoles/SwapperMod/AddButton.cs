@@ -1,8 +1,9 @@
-using System;
-using System.Linq;
 using HarmonyLib;
 using Hazel;
+using System;
+using System.Linq;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -10,12 +11,11 @@ using Object = UnityEngine.Object;
 namespace TownOfUs.CrewmateRoles.SwapperMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class AddButton
+    public static class AddButton
     {
         private static int _mostRecentId;
         private static Sprite ActiveSprite => TownOfUs.SwapperSwitch;
         public static Sprite DisabledSprite => TownOfUs.SwapperSwitchDisabled;
-
 
         public static void GenButton(Swapper role, int index, bool isDead)
         {
@@ -27,7 +27,6 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
             }
 
             var confirmButton = MeetingHud.Instance.playerStates[index].Buttons.transform.GetChild(0).gameObject;
-
 
             var newButton = Object.Instantiate(confirmButton, MeetingHud.Instance.playerStates[index].transform);
             var renderer = newButton.GetComponent<SpriteRenderer>();
@@ -44,7 +43,6 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
             role.Buttons.Add(newButton);
             role.ListOfActives.Add(false);
         }
-
 
         private static Action SetActive(Swapper role, int index)
         {
@@ -79,11 +77,10 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
                     }
                 }
 
-
                 if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
                 {
                     var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte) CustomRPC.SetSwaps, SendOption.Reliable, -1);
+                        (byte)CustomRPC.SetSwaps, SendOption.Reliable, -1);
                     writer2.Write(sbyte.MaxValue);
                     writer2.Write(sbyte.MaxValue);
                     AmongUsClient.Instance.FinishRpcImmediately(writer2);
@@ -91,7 +88,7 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
                 }
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.SetSwaps, SendOption.Reliable, -1);
+                    (byte)CustomRPC.SetSwaps, SendOption.Reliable, -1);
                 writer.Write(SwapVotes.Swap1.TargetPlayerId);
                 writer.Write(SwapVotes.Swap2.TargetPlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -102,17 +99,15 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
 
         public static void Postfix(MeetingHud __instance)
         {
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Swapper))
+            foreach (var swapper in RoleService.Instance.GetRoles().GetRoles<Swapper>())
             {
-                var swapper = (Swapper) role;
                 swapper.ListOfActives.Clear();
                 swapper.Buttons.Clear();
             }
 
-
             if (PlayerControl.LocalPlayer.Data.IsDead) return;
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Swapper)) return;
-            var swapperrole = BaseRole.GetRole<Swapper>(PlayerControl.LocalPlayer);
+            var swapperrole = RoleService.Instance.GetRoles().GetRoleOfPlayer<Swapper>(PlayerControl.LocalPlayer);
             for (var i = 0; i < __instance.playerStates.Length; i++)
                 GenButton(swapperrole, i, __instance.playerStates[i].AmDead);
         }

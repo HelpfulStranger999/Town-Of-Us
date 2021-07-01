@@ -1,6 +1,7 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.ImpostorRoles.CamouflageMod
 {
@@ -13,7 +14,7 @@ namespace TownOfUs.ImpostorRoles.CamouflageMod
             if (!flag) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
-            var role = BaseRole.GetRole<Camouflager>(PlayerControl.LocalPlayer);
+            var role = RoleService.Instance.GetRoles().GetRoleOfPlayer<Camouflager>(PlayerControl.LocalPlayer);
             var target = DestroyableSingleton<HudManager>.Instance.KillButton.CurrentTarget;
             if (__instance == role.CamouflageButton)
             {
@@ -22,7 +23,7 @@ namespace TownOfUs.ImpostorRoles.CamouflageMod
                 if (role.CamouflageTimer() != 0) return false;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.Camouflage,
+                    (byte)CustomRPC.Camouflage,
                     SendOption.Reliable, -1);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

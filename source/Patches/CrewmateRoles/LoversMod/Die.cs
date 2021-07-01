@@ -1,11 +1,12 @@
 using HarmonyLib;
 using TownOfUs.CrewmateRoles.AltruistMod;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.CrewmateRoles.LoversMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Die))]
-    public class Die
+    public static class Die
     {
         public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] DeathReason reason)
         {
@@ -14,7 +15,7 @@ namespace TownOfUs.CrewmateRoles.LoversMod
 
             var flag3 = __instance.isLover() && CustomGameOptions.BothLoversDie;
             if (!flag3) return true;
-            var otherLover = BaseRole.GetRole<BaseLover>(__instance).OtherLover.Player;
+            var otherLover = RoleService.Instance.GetRoles().GetRoleOfPlayer<BaseLover>(__instance).OtherLover.Player;
             if (otherLover.Data.IsDead) return true;
 
             if (reason == DeathReason.Exile) KillButtonTarget.DontRevive = __instance.PlayerId;

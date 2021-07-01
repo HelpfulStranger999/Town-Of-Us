@@ -1,7 +1,7 @@
-using System.Linq;
 using HarmonyLib;
 using TownOfUs.Extensions;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 
 namespace TownOfUs.CrewmateRoles.SnitchMod
 {
@@ -10,9 +10,8 @@ namespace TownOfUs.CrewmateRoles.SnitchMod
     {
         public static void Postfix(PlayerControl __instance)
         {
-            foreach (var role in BaseRole.AllRoles.Where(x => x.RoleType == RoleEnum.Snitch))
+            foreach (var snitch in RoleService.Instance.GetRoles().GetRoles<Snitch>())
             {
-                var snitch = (Snitch) role;
                 if (PlayerControl.LocalPlayer.Data.IsDead || snitch.Player.Data.IsDead)
                 {
                     snitch.SnitchArrows.DestroyAll();

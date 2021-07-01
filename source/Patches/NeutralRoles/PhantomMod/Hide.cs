@@ -1,18 +1,19 @@
 using HarmonyLib;
 using TownOfUs.Roles;
+using TownOfUs.Services;
 using UnityEngine;
 
 namespace TownOfUs.NeutralRoles.PhantomMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     [HarmonyPriority(Priority.Last)]
-    public class Hide
+    public static class Hide
     {
         public static void Postfix(HudManager __instance)
         {
-            foreach (var role in BaseRole.GetRoles(RoleEnum.Phantom))
+            foreach (var role in RoleService.Instance.GetRoles().GetRoles<Phantom>())
             {
-                var phantom = (Phantom) role;
+                var phantom = (Phantom)role;
                 var caught = phantom.Caught;
                 if (!caught)
                 {
