@@ -48,6 +48,15 @@
         {
             var config = new Configuration();
 
+            config.General.DoCommsCamouflage = CustomGameOptions.ColourblindComms;
+            config.General.DoCommsCamouflageMeetings = CustomGameOptions.MeetingColourblind;
+            config.General.CanImpostorsSeeTeammateRoles = CustomGameOptions.ImpostorSeeRoles;
+            config.General.CanDeadSeeAllRoles = CustomGameOptions.DeadSeeRoles;
+            config.General.MaxImpostorRoles = CustomGameOptions.MaxImpostorRoles;
+            config.General.MaxNeutralRoles = CustomGameOptions.MaxNeutralRoles;
+            config.General.DoesRoleAppearUnderName = CustomGameOptions.RoleUnderName;
+            config.General.VanillaProbability = CustomGameOptions.VanillaGame / 100.0f;
+
             config.Mayor.Probability = CustomGameOptions.MayorOn / 100.0f;
             config.Mayor.AreExtraVotesAnonymous = CustomGameOptions.MayorAnonymous;
             config.Mayor.InitialVoteBankSize = CustomGameOptions.MayorVoteBank;
@@ -177,7 +186,7 @@
         public bool CanImpostorsSeeTeammateRoles { get; set; } = false;
         public bool CanDeadSeeAllRoles { get; set; } = false;
         public int MaxImpostorRoles { get; set; } = 1;
-        public int MaxCrewmateRoles { get; set; } = 1;
+        public int MaxNeutralRoles { get; set; } = 1;
         public bool DoesRoleAppearUnderName { get; set; } = true;
         public float VanillaProbability { get; set; } = 0.0f;
     }
